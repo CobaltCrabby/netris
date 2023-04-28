@@ -4,6 +4,11 @@ const redis = require('redis');
 const app = express();
 const port = 3000;
 
+const mem = redis.createClient();
+mem.on('error', (err) => {
+    console.log(`REDIS ERROR: ${err}`);
+});
+
 app.get('/', (req, res) => {
     res.send('KENTRIS');
 });
