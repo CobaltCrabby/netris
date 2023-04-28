@@ -25,8 +25,8 @@ void Tetromino::addMinos(Mino*** minoGrid, int gx, int gy) {
 			break;
 		case T:
 			minos[0] = addToGrid(minoGrid, purple, 3, 18, gx, gy);
-			minos[1] = addToGrid(minoGrid, purple, 4, 19, gx, gy);
-			minos[2] = addToGrid(minoGrid, purple, 4, 18, gx, gy);
+			minos[1] = addToGrid(minoGrid, purple, 4, 18, gx, gy);
+			minos[2] = addToGrid(minoGrid, purple, 4, 19, gx, gy);
 			minos[3] = addToGrid(minoGrid, purple, 5, 18, gx, gy);
 			break;
 		case O:
@@ -64,4 +64,16 @@ Mino* Tetromino::addToGrid(Mino*** minoGrid, enum color c, int x, int y, int gx,
 
 Mino** Tetromino::getMinos() {
 	return minos;
+}
+
+enum piece Tetromino::getType() {
+	return type;
+}
+
+int Tetromino::getRotation() {
+	return rotation;
+}
+
+void Tetromino::setRotation(int mino) {
+	rotation += mino;
 }
