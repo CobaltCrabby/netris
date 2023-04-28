@@ -1,14 +1,12 @@
-const http = require('http');
+const express = require('express');
 
-const host = 'localhost';
-const port = 8000;
+const app = express();
+const port = 3000;
 
-const requestListener = (_, res) => {
-    res.writeHead(200);
-    res.end("test");
-};
+app.get('/', (req, res) => {
+    res.send('KENTRIS');
+});
 
-const server = http.createServer(requestListener);
-server.listen(port, host, () => {
-    console.log(`Server is running on http://${host}:${port}`);
+app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`);
 });
