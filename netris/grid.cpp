@@ -116,7 +116,6 @@ bool Grid::move(int x, int y) {
             minoGrid[nx][ny]->move(x, y, ratio);
         }
     }
-
     return true;
 }
 
