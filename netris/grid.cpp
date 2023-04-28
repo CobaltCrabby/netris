@@ -89,7 +89,11 @@ bool Grid::move(int x, int y) {
             int py = currentPiece->getMinos()[j]->getY();
             if (!isPieceMino && nx == px && ny == py) isPieceMino = true;
         }
-        if (minoGrid[nx][ny] != nullptr && !isPieceMino) return false;
+        if (minoGrid[nx][ny] != nullptr && !isPieceMino) {
+            if (y==-1)
+                currentPiece = nullptr;
+            return false;
+        }
     }
     
     if (x == -1 || y == -1) {
@@ -121,5 +125,4 @@ bool Grid::move(int x, int y) {
 
 void Grid::hardDrop() {
     while (move(0, -1));
-    currentPiece = nullptr;
 }
