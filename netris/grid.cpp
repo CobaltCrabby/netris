@@ -3,6 +3,9 @@
 #include "mino.h"
 #include "enum.h"
 
+#include <iostream>
+using namespace std;
+
 Grid::Grid(int x, int y) {
     sizeX = x;
     sizeY = y;
@@ -116,11 +119,30 @@ bool Grid::move(int x, int y) {
             minoGrid[nx][ny]->move(x, y, ratio);
         }
     }
-
     return true;
 }
 
 void Grid::hardDrop() {
     while (move(0, -1));
-    currentPiece = nullptr;
+    srand((unsigned)time(NULL));
+    addTetromino(static_cast<piece>((int)rand() % 7));
+}
+
+//1 = cw, -1 = ccw, 2 = 180
+void Grid::rotate(int direction) {
+    switch (currentPiece->getType()) {
+        case I:
+            for (int i = 0; i < 4; i++) {
+                int ox = currentPiece->getMinos()[i]->getX();
+                int oy = currentPiece->getMinos()[i]->getY();
+                int nx = ox + I_ROTATION[currentPiece->getRotation()][i][0];
+                int ny = oy + I_ROTATION[currentPiece->getRotation()][i][1];
+
+                minoGrid[nx][ny] = minoGrid[ox][oy];
+                minoGrid[ox][oy] = nullptr;
+                minoGrid[nx][ny]->move(I_ROTATION[currentPiece->getRotation()][i][0], I_ROTATION[currentPiece->getRotation()][i][1], ratio);
+                currentPiece->setRotation(direction);
+                break;
+            }
+    }
 }

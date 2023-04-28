@@ -66,7 +66,8 @@ int main(void) {
 
     //t piece
     srand((unsigned) time(NULL));
-    grid->addTetromino(static_cast<piece>((int) rand() % 7));
+    //grid->addTetromino(static_cast<piece>((int) rand() % 7));
+    grid->addTetromino(I);
 
     glfwSetWindowSizeCallback(window, window_size_callback);
 
@@ -148,6 +149,7 @@ int prevLeft = 0;
 int prevRight = 0;
 int prevDown = 0;
 int prevSpace = 0;
+int prevA = 0;
 
 void keyCallback(GLFWwindow* window) {
     int left = glfwGetKey(window, GLFW_KEY_LEFT);
@@ -171,6 +173,10 @@ void keyCallback(GLFWwindow* window) {
         dasFrame = 0;
     }
 
+    if (a && !prevA) {
+        grid->rotate(1);
+    }
+
     if (space && !prevSpace) {
         grid->hardDrop();
     }
@@ -179,4 +185,5 @@ void keyCallback(GLFWwindow* window) {
     prevRight = right;
     prevDown = down;
     prevSpace = space;
+    prevA = a;
 }
