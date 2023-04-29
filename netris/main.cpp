@@ -87,7 +87,6 @@ int main(void) {
         glfwPollEvents();
         keyCallback(window);
         
-        std::cout << frame << std::endl;
         frame++;
     }
 
@@ -150,6 +149,7 @@ int prevRight = 0;
 int prevDown = 0;
 int prevSpace = 0;
 int prevA = 0;
+int prevS = 0;
 
 void keyCallback(GLFWwindow* window) {
     int left = glfwGetKey(window, GLFW_KEY_LEFT);
@@ -174,6 +174,10 @@ void keyCallback(GLFWwindow* window) {
     }
 
     if (a && !prevA) {
+        grid->rotate(-1);
+    }
+
+    if (s && !prevS) {
         grid->rotate(1);
     }
 
@@ -186,4 +190,5 @@ void keyCallback(GLFWwindow* window) {
     prevDown = down;
     prevSpace = space;
     prevA = a;
+    prevS = s;
 }

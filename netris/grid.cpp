@@ -131,18 +131,38 @@ void Grid::hardDrop() {
 //1 = cw, -1 = ccw, 2 = 180
 void Grid::rotate(int direction) {
     switch (currentPiece->getType()) {
-        case I:
+    case I:
+        if (direction == 1) {
             for (int i = 0; i < 4; i++) {
-                int ox = currentPiece->getMinos()[i]->getX();
-                int oy = currentPiece->getMinos()[i]->getY();
-                int nx = ox + I_ROTATION[currentPiece->getRotation()][i][0];
-                int ny = oy + I_ROTATION[currentPiece->getRotation()][i][1];
-
-                minoGrid[nx][ny] = minoGrid[ox][oy];
-                minoGrid[ox][oy] = nullptr;
-                minoGrid[nx][ny]->move(I_ROTATION[currentPiece->getRotation()][i][0], I_ROTATION[currentPiece->getRotation()][i][1], ratio);
-                currentPiece->setRotation(direction);
-                break;
+                rotateMove(I_ROTATION, direction, i);
             }
+            currentPiece->setRotation(direction);
+            break;
+        }
+        else {
+            currentPiece->setRotation(direction);
+            for (int i = 3; i >= 0; i--) {
+                rotateMove(I_ROTATION, direction, i);
+            }
+        }
+        cout << endl;
+        break;
+        }
     }
+
+void Grid::rotateMove(const int LUT[4][4][3], int direction, int i) {
+    const int(*array)[4][3] = &(LUT[0]);
+    int index = array[currentPiece->getRotation()][i][0];
+    int ox = currentPiece->getMinos()[index]->getX();
+    int oy = currentPiece->getMinos()[index]->getY();
+    int nx = ox + array[currentPiece->getRotation()][i][1] * direction;
+    int ny = oy + array[currentPiece->getRotation()][i][2] * direction;
+
+    cout << "moving " << ox << ", " << oy << " to " << nx << ", " << ny << endl;
+
+    minoGrid[nx][ny] = minoGrid[ox][oy];
+    if (ox != nx || oy != ny) {
+        minoGrid[ox][oy] = nullptr;
+    }
+    minoGrid[nx][ny]->move(array[currentPiece->getRotation()][i][1] * direction, array[currentPiece->getRotation()][i][2] * direction, ratio);
 }
