@@ -164,4 +164,3 @@ void Grid::rotateMove(const int LUT[4][4][3], int direction, int i) {
     }
     minoGrid[nx][ny]->move(array[currentPiece->getRotation()][i][1] * direction, array[currentPiece->getRotation()][i][2] * direction, ratio);
 }
-
