@@ -95,7 +95,7 @@ bool Grid::move(int x, int y) {
         if (minoGrid[nx][ny] != nullptr && !isPieceMino) return false;
     }
     
-    if (x == -1 || y == -1) {
+    if (x == -1) {
         for (int i = 0; i < 4; i++) {
             int ox = currentPiece->getMinos()[i]->getX();
             int oy = currentPiece->getMinos()[i]->getY();
