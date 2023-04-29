@@ -131,24 +131,22 @@ void Grid::hardDrop() {
 //1 = cw, -1 = ccw, 2 = 180
 void Grid::rotate(int direction) {
     switch (currentPiece->getType()) {
-    case I:
-        if (direction == 1) {
-            for (int i = 0; i < 4; i++) {
-                rotateMove(I_ROTATION, direction, i);
+        case I:
+            if (direction == 1) {
+                for (int i = 0; i < 4; i++) {
+                    rotateMove(I_ROTATION, direction, i);
+                }
+                currentPiece->setRotation(direction);
+            } else {
+                currentPiece->setRotation(direction);
+                for (int i = 3; i >= 0; i--) {
+                    rotateMove(I_ROTATION, direction, i);
+                }
             }
-            currentPiece->setRotation(direction);
+            cout << endl;
             break;
-        }
-        else {
-            currentPiece->setRotation(direction);
-            for (int i = 3; i >= 0; i--) {
-                rotateMove(I_ROTATION, direction, i);
-            }
-        }
-        cout << endl;
-        break;
-        }
     }
+}
 
 void Grid::rotateMove(const int LUT[4][4][3], int direction, int i) {
     const int(*array)[4][3] = &(LUT[0]);

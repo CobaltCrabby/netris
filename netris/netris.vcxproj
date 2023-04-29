@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{9642f8e1-6a9c-41d4-8db5-e2ef8f490bfe}</ProjectGuid>
-    <RootNamespace>GLFWTest</RootNamespace>
+    <RootNamespace>netris</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>netris</ProjectName>
   </PropertyGroup>
