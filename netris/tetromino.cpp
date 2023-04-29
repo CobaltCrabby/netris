@@ -75,5 +75,6 @@ int Tetromino::getRotation() {
 }
 
 void Tetromino::setRotation(int mino) {
-	rotation += mino;
+	rotation += mino + 4;
+	rotation %= 4;
 }

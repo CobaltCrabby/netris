@@ -33,11 +33,11 @@ class Grid {
 	};
 
 	//0, R, 2, L (to do ccw just reverse the math)
-	const int I_ROTATION[4][4][2]{
-		{{2, 1}, {1, 0}, {0, -1}, {-1, -2}}, //0 to R
-		{{-2, -2}, {-1, -1}, {0, 0}, {1, 1}}, //R to 2
-		{{1, 2}, {0, 1}, {-1, 0}, {-2, -1}}, //2 to L
-		{{-1, -1}, {0, 0}, {1, 1}, {2, 2}} //L to 0
+	const int I_ROTATION[4][4][3]{
+		{{0, 2, 1}, {2, 0, -1}, {1, 1, 0}, {3, -1, -2}}, //0 to R
+		{{0, -2, -2}, {1, -1, -1}, {2, 0, 0}, {3, 1, 1}}, //R to 2
+		{{0, 1, 2}, {1, 0, 1}, {2, -1, 0}, {3, -2, -1}}, //2 to L
+		{{0, -1, -1}, {1, 0, 0}, {2, 1, 1}, {3, 2, 2}} //L to 0
 	};
 
 	public:
@@ -49,4 +49,5 @@ class Grid {
 		bool move(int x, int y);
 		void hardDrop();
 		void rotate(int direction);
+		void rotateMove(const int LUT[4][4][3], int direction, int i);
 };
