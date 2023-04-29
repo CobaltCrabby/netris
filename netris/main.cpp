@@ -28,46 +28,31 @@ int main(void) {
 
     grid = new Grid(10, 20);
 
-    //o piece
-    grid->add(yellow, 0, 0);
-    grid->add(yellow, 0, 1);
-    grid->add(yellow, 1, 0);
-    grid->add(yellow, 1, 1);
+    grid->add(dark_blue, 8, 0);
+    grid->add(dark_blue, 9, 0);
+    grid->add(dark_blue, 9, 1);
+    grid->add(dark_blue, 9, 2);
 
-    //z piece
-    grid->add(red, 0, 2);
-    grid->add(red, 0, 3);
-    grid->add(red, 1, 3);
-    grid->add(red, 1, 4);
+    grid->add(orange, 9, 3);
+    grid->add(orange, 9, 4);
+    grid->add(orange, 9, 5);
+    grid->add(orange, 8, 5);
 
-    //s piece
-    grid->add(green, 2, 0);
-    grid->add(green, 3, 0);
-    grid->add(green, 3, 1);
-    grid->add(green, 4, 1);
+    grid->add(green, 5, 0);
+    grid->add(green, 6, 0);
+    grid->add(green, 6, 1);
+    grid->add(green, 7, 1);
 
-    //j piece
-    grid->add(dark_blue, 5, 1);
-    grid->add(dark_blue, 6, 1);
-    grid->add(dark_blue, 7, 1);
-    grid->add(dark_blue, 7, 0);
+    grid->add(purple, 5, 3);
+    grid->add(purple, 6, 2);
+    grid->add(purple, 6, 3);
+    grid->add(purple, 7, 3);
 
-    //l piece
-    grid->add(orange, 7, 2);
-    grid->add(orange, 8, 2);
-    grid->add(orange, 8, 1);
-    grid->add(orange, 8, 0);
-
-    //i piece
-    grid->add(light_blue, 9, 0);
-    grid->add(light_blue, 9, 1);
-    grid->add(light_blue, 9, 2);
-    grid->add(light_blue, 9, 3);
 
     //t piece
     srand((unsigned) time(NULL));
     //grid->addTetromino(static_cast<piece>((int) rand() % 7));
-    grid->addTetromino(I);
+    grid->addTetromino(T);
 
     glfwSetWindowSizeCallback(window, window_size_callback);
 

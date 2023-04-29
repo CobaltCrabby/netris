@@ -1,7 +1,7 @@
-#include "tetromino.h"
+#include "tetramino.h"
 #include "enum.h"
 
-Tetromino::Tetromino(enum piece shape) {
+Tetramino::Tetramino(enum piece shape) {
 	type = shape;
 	rotation = 0;
 	for (int i = 0; i < 4; i++) {
@@ -9,7 +9,7 @@ Tetromino::Tetromino(enum piece shape) {
 	}
 }
 
-void Tetromino::addMinos(Mino*** minoGrid, int gx, int gy) {
+void Tetramino::addMinos(Mino*** minoGrid, int gx, int gy) {
 	switch (type) {
 		case Z:
 			minos[0] = addToGrid(minoGrid, red, 3, 19, gx, gy);
@@ -56,25 +56,25 @@ void Tetromino::addMinos(Mino*** minoGrid, int gx, int gy) {
 	}
 }
 
-Mino* Tetromino::addToGrid(Mino*** minoGrid, enum color c, int x, int y, int gx, int gy) {
+Mino* Tetramino::addToGrid(Mino*** minoGrid, enum color c, int x, int y, int gx, int gy) {
     Mino* mino = new Mino(x, y, c, gx, gy);
     minoGrid[x][y] = mino;
     return mino;
 }
 
-Mino** Tetromino::getMinos() {
+Mino** Tetramino::getMinos() {
 	return minos;
 }
 
-enum piece Tetromino::getType() {
+enum piece Tetramino::getType() {
 	return type;
 }
 
-int Tetromino::getRotation() {
+int Tetramino::getRotation() {
 	return rotation;
 }
 
-void Tetromino::setRotation(int mino) {
+void Tetramino::setRotation(int mino) {
 	rotation += mino + 4;
 	rotation %= 4;
 }

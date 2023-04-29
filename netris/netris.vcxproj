@@ -145,7 +145,7 @@
     <ClInclude Include="line.h" />
     <ClInclude Include="mino.h" />
     <ClInclude Include="stb_image.h" />
-    <ClInclude Include="tetromino.h" />
+    <ClInclude Include="tetramino.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="mino.png" />

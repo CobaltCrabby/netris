@@ -69,7 +69,7 @@ Mino* Grid::add(enum color c, int x, int y) {
 }
 
 void Grid::addTetromino(enum piece p) {
-    currentPiece = new Tetromino(p);
+    currentPiece = new Tetramino(p);
     currentPiece->addMinos(minoGrid, sizeX, sizeY);
 }
 
@@ -95,7 +95,7 @@ bool Grid::move(int x, int y) {
         if (minoGrid[nx][ny] != nullptr && !isPieceMino) return false;
     }
     
-    if (x == -1) {
+    if (x == -1 || y == -1) {
         for (int i = 0; i < 4; i++) {
             int ox = currentPiece->getMinos()[i]->getX();
             int oy = currentPiece->getMinos()[i]->getY();
@@ -130,37 +130,123 @@ void Grid::hardDrop() {
 
 //1 = cw, -1 = ccw, 2 = 180
 void Grid::rotate(int direction) {
+    const int(*array)[4][2] = S_ROTATION;
+    int offsetX = 0;
+    int offsetY = 0;
+    bool cont;
+
     switch (currentPiece->getType()) {
         case I:
-            if (direction == 1) {
-                for (int i = 0; i < 4; i++) {
-                    rotateMove(I_ROTATION, direction, i);
-                }
-                currentPiece->setRotation(direction);
-            } else {
-                currentPiece->setRotation(direction);
-                for (int i = 3; i >= 0; i--) {
-                    rotateMove(I_ROTATION, direction, i);
-                }
-            }
-            cout << endl;
+            array = I_ROTATION;
+            break;
+        /*case Z:
+            array = Z_ROTATION;
+            break;*/
+        case S:
+            array = S_ROTATION;
+            break;
+        /*case O:
+            array = O_ROTATION;
+            break;
+        case L:
+            array = L_ROTATION;
+            break;
+        case J:
+            array = J_ROTATION;
+            break;*/
+        case T:
+            array = T_ROTATION;
             break;
     }
+
+    for (int k = 0; k < 5; k++) {
+        cont = false;
+
+        //get correct kick table
+        const int(*kickTable)[5][2] = NON_I_KICK_TABLE;
+        if (direction == -1) currentPiece->setRotation(-1);
+        if (currentPiece->getType() == I) kickTable = I_KICK_TABLE;
+
+        int lol = currentPiece->getRotation() * 2;
+        if (direction == -1) lol++;
+
+        offsetX = kickTable[lol][k][0];
+        offsetY = kickTable[lol][k][1];
+
+        if (direction == -1) currentPiece->setRotation(1);
+
+        //test every block
+        for (int i = 0; i < 4; i++) {
+            if (direction == -1) currentPiece->setRotation(-1);
+            int nx = currentPiece->getMinos()[i]->getX() + array[currentPiece->getRotation()][i][0] * direction + offsetX;
+            int ny = currentPiece->getMinos()[i]->getY() + array[currentPiece->getRotation()][i][1] * direction + offsetY;
+            if (direction == -1) currentPiece->setRotation(1);
+
+            //dont move out of board
+            if (nx < 0 || nx >= sizeX || ny < 0 || ny >= sizeY) {
+                std::cout << nx << " " << ny << endl;
+                cont = true;
+                break;
+            }
+
+            //dont move into other pieces
+            bool isPieceMino = false;
+            for (int j = 0; j < 4; j++) {
+                int px = currentPiece->getMinos()[j]->getX();
+                int py = currentPiece->getMinos()[j]->getY();
+                if (!isPieceMino && nx == px && ny == py) isPieceMino = true;
+            }
+
+            if (minoGrid[nx][ny] != nullptr && !isPieceMino) {
+                cont = true;
+                break;
+            }
+        }
+
+        if (!cont) break;
+    }
+
+    if (cont) return;
+
+    int newPositions[4][2];
+    if (direction == -1) currentPiece->setRotation(direction);
+
+    //calculate new positions and set them
+    for (int i = 0; i < 4; i++) {
+        int ox = currentPiece->getMinos()[i]->getX();
+        int oy = currentPiece->getMinos()[i]->getY();
+        int nx = ox + array[currentPiece->getRotation()][i][0] * direction + offsetX;
+        int ny = oy + array[currentPiece->getRotation()][i][1] * direction + offsetY;
+
+        std::cout << "moving " << ox << ", " << oy << " to " << nx << ", " << ny << " with offsets " << offsetX << ", " << offsetY << endl;
+        newPositions[i][0] = nx;
+        newPositions[i][1] = ny;
+
+        minoGrid[ox][oy] = nullptr;
+        currentPiece->getMinos()[i]->move(array[currentPiece->getRotation()][i][0] * direction + offsetX, array[currentPiece->getRotation()][i][1] * direction + offsetY, ratio);
+    }
+
+    for (int i = 0; i < 4; i++) {
+        minoGrid[newPositions[i][0]][newPositions[i][1]] = currentPiece->getMinos()[i];
+    }
+    
+    if (direction == 1) currentPiece->setRotation(direction);
+    std::cout << endl;
 }
 
-void Grid::rotateMove(const int LUT[4][4][3], int direction, int i) {
+void Grid::rotateMove(const int LUT[4][4][3], int direction, int i, int x, int y) {
     const int(*array)[4][3] = &(LUT[0]);
     int index = array[currentPiece->getRotation()][i][0];
     int ox = currentPiece->getMinos()[index]->getX();
     int oy = currentPiece->getMinos()[index]->getY();
-    int nx = ox + array[currentPiece->getRotation()][i][1] * direction;
-    int ny = oy + array[currentPiece->getRotation()][i][2] * direction;
+    int nx = ox + array[currentPiece->getRotation()][i][1] * direction + x;
+    int ny = oy + array[currentPiece->getRotation()][i][2] * direction + y;
 
-    cout << "moving " << ox << ", " << oy << " to " << nx << ", " << ny << endl;
+    std::cout << "moving " << ox << ", " << oy << " to " << nx << ", " << ny << endl;
 
     minoGrid[nx][ny] = minoGrid[ox][oy];
     if (ox != nx || oy != ny) {
         minoGrid[ox][oy] = nullptr;
     }
-    minoGrid[nx][ny]->move(array[currentPiece->getRotation()][i][1] * direction, array[currentPiece->getRotation()][i][2] * direction, ratio);
+    minoGrid[nx][ny]->move(array[currentPiece->getRotation()][i][1] * direction + x, array[currentPiece->getRotation()][i][2] * direction + y, ratio);
 }

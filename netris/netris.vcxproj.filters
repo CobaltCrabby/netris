@@ -47,7 +47,7 @@
     <ClInclude Include="stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="tetromino.h">
+    <ClInclude Include="tetramino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
