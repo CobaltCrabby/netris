@@ -4,6 +4,7 @@
 #include "enum.h"
 
 #include <iostream>
+#include <queue>
 using namespace std;
 
 Grid::Grid(int x, int y) {
@@ -27,6 +28,17 @@ Grid::Grid(int x, int y) {
     for (int i = 0; i < y + 1; i++) {
         gridLines[x + 1 + i] = new Line((-x / (2.0f / 0.07f)), (-y / (2.0f / 0.07f)) + 0.07f * i, (x / (2.0f / 0.07f)), (-y / (2.0f / 0.07f)) + 0.07f * i);
     }
+
+    srand((unsigned) time(NULL));
+    enum piece order[7] {I, O, T, S, Z, L, J};
+    random_shuffle(&order[0], &order[7]);
+    for (int i = 1; i < 7; i++) {
+        pieceQueue.push_back(order[i]);
+        if (i < 6) {
+            pieceQueuePieces[i - 1] = new QueueTetramino(order[i], i - 1, ratio);
+        }
+    }
+    addTetromino(order[0]);
 }
 
 void Grid::draw() {
@@ -41,7 +53,12 @@ void Grid::draw() {
     for (int i = 0; i < sizeX + sizeY + 2; i++) {
         gridLines[i]->draw();
     }
+
+    for (int i = 0; i < 5; i++) {
+        pieceQueuePieces[i]->draw();
+    }
 }
+
  
 void Grid::resize(int x, int y) {
     ratio = ((float) x) / y;
@@ -58,7 +75,11 @@ void Grid::resize(int x, int y) {
             if (minoGrid[i][j] != nullptr) {
                 minoGrid[i][j]->resize(ratio);
             }
-        }
+        } 
+    }
+
+    for (int i = 0; i < 5; i++) {
+        pieceQueuePieces[i]->resize(ratio);
     }
 }
 
@@ -124,8 +145,33 @@ bool Grid::move(int x, int y) {
 
 void Grid::hardDrop() {
     while (move(0, -1));
-    srand((unsigned)time(NULL));
-    addTetromino(static_cast<piece>((int)rand() % 7));
+
+    for (int i = 0; i < pieceQueue.size(); i++) {
+        std::cout << pieceQueue[i] << " ";
+    }
+    std::cout << endl;
+
+    addTetromino(pieceQueue.front());
+    pieceQueue.pop_front();
+
+    if (pieceQueue.size() == 5) {
+        srand((unsigned)time(NULL)); 
+        enum piece order[7]{I, O, T, S, Z, L, J};
+        random_shuffle(&order[0], &order[7]);
+        for (int i = 0; i < 7; i++) {
+            pieceQueue.push_back(order[i]);
+        }
+    }
+
+    delete pieceQueuePieces[0];
+
+    for (int i = 0; i < 4; i++) {
+        pieceQueuePieces[i] = pieceQueuePieces[i + 1];
+        pieceQueuePieces[i]->moveUp();
+        pieceQueuePieces[i]->resize(ratio);
+    }
+
+    pieceQueuePieces[4] = new QueueTetramino(pieceQueue[4], 4, ratio);
 }
 
 //1 = cw, -1 = ccw, 2 = 180

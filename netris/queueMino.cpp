@@ -1,80 +1,63 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <ctime>
-#include <iostream>
-
-#include "mino.h"
-#include "enum.h"
-#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-Mino::Mino() {
-    x = 0;
-    y = 0;
-    r = 0;
-    g = 0;
-    b = 0;
-    g_x = 0;
-    g_y = 0;
-}
+#include "queueMino.h"
 
-Mino::Mino(int _x, int _y, enum color _c, int gx, int gy) {
-    x = _x;
-    y = _y;
-    r = 0;
-    g = 0;
-    b = 0;
-    g_x = gx;
-    g_y = gy;
-    color = _c;
+QueueMino::QueueMino(float x, float y, float size_, enum color c, float rat) {
+	screenX = x;
+	screenY = y;
+	size = size_;
 
-    switch (_c) {
-        case red:
-            r = 1.0f;
-            break;
-        case green:
-            g = 1.0f;
-            break;
-        case dark_blue:
-            r = 55 / 255.0f; 
-            g = 60 / 255.0f;
-            b = 250 / 255.0f;
-            break;
-        case yellow:
-            g = 1.0f;
-            r = 1.0f;
-            break;
-        case light_blue:
-            g = 180 / 255.0f;
-            b = 1.0f;
-            break;
-        case purple:
-            r = 227 / 255.0f;
-            g = 0 / 255.0f;
-            b = 163 / 255.0f;
-            break;
-        case orange:
-            r = 230 / 255.0f;
-            g = 100 / 255.0f;
+    color = c;
+
+    switch (c) {
+    case red:
+        r = 1.0f;
+        break;
+    case green:
+        g = 1.0f;
+        break;
+    case dark_blue:
+        r = 55 / 255.0f;
+        g = 60 / 255.0f;
+        b = 250 / 255.0f;
+        break;
+    case yellow:
+        g = 1.0f;
+        r = 1.0f;
+        break;
+    case light_blue:
+        g = 180 / 255.0f;
+        b = 1.0f;
+        break;
+    case purple:
+        r = 227 / 255.0f;
+        g = 0 / 255.0f;
+        b = 163 / 255.0f;
+        break;
+    case orange:
+        r = 230 / 255.0f;
+        g = 100 / 255.0f;
     }
 
-    drawInit();
+    drawInit(rat);
 }
 
-Mino::~Mino() {
+QueueMino::~QueueMino() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
     glDeleteProgram(shaderProgram);
 }
 
-void Mino::drawInit() {
+void QueueMino::drawInit(float ratio) {
     //setting the grid positions
-    vertices[0] = (-g_x / (2.0f / 0.07f)) + 0.07f * x + 0.07f;
-    vertices[1] = (-g_y / (2.0f / 0.07f)) + 0.07f * y + 0.07f;
+    vertices[0] = screenX + size / ratio;
+    vertices[1] = screenY;
     vertices[9] = vertices[0];
-    vertices[10] = vertices[1] - 0.07f;
-    vertices[18] = vertices[0] - 0.07f;
+    vertices[10] = vertices[1] - size / ratio;
+    vertices[18] = vertices[0] - size;
     vertices[19] = vertices[10];
     vertices[27] = vertices[18];
     vertices[28] = vertices[1];
@@ -147,19 +130,19 @@ void Mino::drawInit() {
     stbi_image_free(data);
 }
 
-void Mino::draw() {
+void QueueMino::draw() {
     glBindTexture(GL_TEXTURE_2D, texture);
     glUseProgram(shaderProgram);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 }
 
-void Mino::resize(float ratio) {
-    vertices[0] = ((-g_x / (2.0f / 0.07f)) + 0.07f * x + 0.07f) / ratio;
-    vertices[1] = (-g_y / (2.0f / 0.07f)) + 0.07f * y + 0.07f;
+void QueueMino::resize(float ratio) {
+    vertices[0] = (screenX + size) / ratio;
+    vertices[1] = screenY;
     vertices[9] = vertices[0];
-    vertices[10] = vertices[1] - 0.07f;
-    vertices[18] = vertices[0] - 0.07f / ratio;
+    vertices[10] = vertices[1] - size;
+    vertices[18] = vertices[0] - size / ratio;
     vertices[19] = vertices[10];
     vertices[27] = vertices[18];
     vertices[28] = vertices[1];
@@ -171,17 +154,6 @@ void Mino::resize(float ratio) {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);
 }
 
-int Mino::getX() {
-    return x;
-}
-
-int Mino::getY() {
-    return y;
-}
-
-void Mino::move(int ax, int ay, float ratio) {
-    x += ax;
-    y += ay;
-
-    resize(ratio);
+void QueueMino::changeY(float spread) {
+    screenY += spread;
 }

@@ -2,6 +2,9 @@
 #include "line.h"
 #include "mino.h"
 #include "tetramino.h"
+#include "queueTetramino.h"
+#include <queue>
+
 
 class Grid {
 	Line** gridLines;
@@ -9,6 +12,8 @@ class Grid {
 	Mino*** minoGrid;
 	Tetramino* currentPiece;
 	float ratio = 1;
+	std::deque<enum piece> pieceQueue;
+	QueueTetramino* pieceQueuePieces[5];
 
 	const int NON_I_KICK_TABLE[8][5][2] {
 		{{0, 0}, {-1, 0}, {-1, 1}, {0, -2}, {-1, -2}},

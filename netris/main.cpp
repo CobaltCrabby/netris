@@ -28,32 +28,6 @@ int main(void) {
 
     grid = new Grid(10, 20);
 
-    grid->add(dark_blue, 8, 0);
-    grid->add(dark_blue, 9, 0);
-    grid->add(dark_blue, 9, 1);
-    grid->add(dark_blue, 9, 2);
-
-    grid->add(orange, 9, 3);
-    grid->add(orange, 9, 4);
-    grid->add(orange, 9, 5);
-    grid->add(orange, 8, 5);
-
-    grid->add(green, 5, 0);
-    grid->add(green, 6, 0);
-    grid->add(green, 6, 1);
-    grid->add(green, 7, 1);
-
-    grid->add(purple, 5, 3);
-    grid->add(purple, 6, 2);
-    grid->add(purple, 6, 3);
-    grid->add(purple, 7, 3);
-
-
-    //t piece
-    srand((unsigned) time(NULL));
-    //grid->addTetromino(static_cast<piece>((int) rand() % 7));
-    grid->addTetromino(J);
-
     glfwSetWindowSizeCallback(window, window_size_callback);
 
     int frame = 0;

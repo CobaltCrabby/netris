@@ -1,7 +1,7 @@
 #pragma once
 #include "enum.h"
 
-class Mino {
+class QueueMino {
     const char* pvertexShaderSource = "#version 430 core\n"
         "layout (location = 0) in vec3 aPos;\n"
         "layout (location = 1) in vec2 aTexCoord;\n"
@@ -23,13 +23,6 @@ class Mino {
         "FragColor = texture(texture1, TexCoord) * ourColor;\n"
         "}\0";
 
-    unsigned int shaderProgram;
-    unsigned int VBO, VAO, EBO, texture;
-    int x, y;
-    float r, g, b;
-    int g_x, g_y;
-    enum color color;
-
     float vertices[36] = {
         //vertex           texture      rgba color
         1.0f, 1.0f, 0.0f,  1.0f, 0.0f,  0.0f, 0.0f, 0.0f, 1.0f, //top right
@@ -43,14 +36,19 @@ class Mino {
         0, 2, 3
     };
 
-    public:
-        Mino();
-        Mino(int _x, int _y, enum color _c, int gx, int gy);
-        ~Mino();
-        void drawInit();
+    unsigned int shaderProgram;
+    unsigned int VBO, VAO, EBO, texture;
+    int x, y;
+    float r, g, b;
+
+	public:
+        float screenX, screenY, size;
+        enum color color;
+
+		QueueMino(float x, float y, float size, enum color c, float ratio);
+		~QueueMino();
+		void drawInit(float ratio);
         void draw();
-        void resize(float ratio);
-        int getX();
-        int getY();
-        void move(int x, int y, float ratio);
+		void resize(float ratio);
+        void changeY(float spread);
 };

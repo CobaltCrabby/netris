@@ -137,6 +137,8 @@
     <ClCompile Include="line.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mino.cpp" />
+    <ClCompile Include="queueMino.cpp" />
+    <ClCompile Include="queueTetramino.cpp" />
     <ClCompile Include="tetramino.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -144,6 +146,8 @@
     <ClInclude Include="grid.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="mino.h" />
+    <ClInclude Include="queueMino.h" />
+    <ClInclude Include="queueTetramino.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="tetramino.h" />
   </ItemGroup>
