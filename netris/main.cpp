@@ -66,6 +66,10 @@ void window_size_callback(GLFWwindow* window, int width, int height) {
     glfwPollEvents();
 }
 
+int arr = 2;
+int das = 11;
+int sds = 2;
+
 int dasFrame = 0;
 int downDasFrame = 0;
 bool dasActive = false;
@@ -80,13 +84,14 @@ void horizontalInput(int input, int prev, int x) {
             dasCharge = true;
         }
         else {
-            if (dasFrame == 11) {
+            if (dasFrame == das) {
                 dasActive = true;
                 dasCharge = false;
                 dasFrame = 0;
             }
 
-            if (dasActive && dasFrame == 2) {
+            if (dasActive && dasFrame == arr) {
+                if (arr == 0) while (grid->move(x, 0));
                 moved = grid->move(x, 0);
                 dasFrame = 0;
             }
@@ -138,7 +143,8 @@ void keyCallback(GLFWwindow* window) {
     horizontalInput(left, prevLeft, -1);
     horizontalInput(right, prevRight, 1);
 
-    if (downDasFrame == 2 && down) {
+    if (downDasFrame >= sds && down) {
+        if (sds == 0) while (grid->move(0, -1));
         grid->move(0, -1);
         downDasFrame = 0;
     }

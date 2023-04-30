@@ -150,6 +150,7 @@ bool Grid::move(int x, int y) {
 
 void Grid::hardDrop() {
     while (move(0, -1));
+    clear();
 
     //print queue 
     for (int i = 0; i < pieceQueue.size(); i++) {
@@ -338,5 +339,34 @@ void Grid::hold() {
         }
 
         addTetromino(type);
+    }
+}
+
+void Grid::clear() {
+    for (int y = 0; y < sizeY; y++) {
+        bool cleared = true;
+        for (int x = 0; x < sizeX; x++) {
+            if (minoGrid[x][y] == nullptr) {
+                cleared = false;
+                break;
+            }
+        }
+
+        if (!cleared) continue;
+
+        for (int x = 0; x < sizeX; x++) {
+            delete minoGrid[x][y];
+            minoGrid[x][y] = nullptr;
+        }
+
+        for (int i = y + 1; i < sizeY; i++) {
+            for (int x = 0; x < sizeX; x++) {
+                if (minoGrid[x][i] == nullptr) continue;
+                minoGrid[x][i - 1] = minoGrid[x][i];
+                minoGrid[x][i - 1]->move(0, -1, ratio);
+                minoGrid[x][i] = nullptr;
+            }
+        }
+        y--;
     }
 }

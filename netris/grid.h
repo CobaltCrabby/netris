@@ -98,4 +98,5 @@ class Grid {
 		void hardDrop();
 		void rotate(int direction);
 		void hold();
+		void clear();
 };
