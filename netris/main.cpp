@@ -52,7 +52,7 @@ int main(void) {
     //t piece
     srand((unsigned) time(NULL));
     //grid->addTetromino(static_cast<piece>((int) rand() % 7));
-    grid->addTetromino(T);
+    grid->addTetromino(J);
 
     glfwSetWindowSizeCallback(window, window_size_callback);
 

@@ -139,13 +139,13 @@ void Grid::rotate(int direction) {
         case I:
             array = I_ROTATION;
             break;
-        /*case Z:
+        case Z:
             array = Z_ROTATION;
-            break;*/
+            break;
         case S:
             array = S_ROTATION;
             break;
-        /*case O:
+        case O:
             array = O_ROTATION;
             break;
         case L:
@@ -153,7 +153,7 @@ void Grid::rotate(int direction) {
             break;
         case J:
             array = J_ROTATION;
-            break;*/
+            break;
         case T:
             array = T_ROTATION;
             break;
@@ -232,21 +232,4 @@ void Grid::rotate(int direction) {
     
     if (direction == 1) currentPiece->setRotation(direction);
     std::cout << endl;
-}
-
-void Grid::rotateMove(const int LUT[4][4][3], int direction, int i, int x, int y) {
-    const int(*array)[4][3] = &(LUT[0]);
-    int index = array[currentPiece->getRotation()][i][0];
-    int ox = currentPiece->getMinos()[index]->getX();
-    int oy = currentPiece->getMinos()[index]->getY();
-    int nx = ox + array[currentPiece->getRotation()][i][1] * direction + x;
-    int ny = oy + array[currentPiece->getRotation()][i][2] * direction + y;
-
-    std::cout << "moving " << ox << ", " << oy << " to " << nx << ", " << ny << endl;
-
-    minoGrid[nx][ny] = minoGrid[ox][oy];
-    if (ox != nx || oy != ny) {
-        minoGrid[ox][oy] = nullptr;
-    }
-    minoGrid[nx][ny]->move(array[currentPiece->getRotation()][i][1] * direction + x, array[currentPiece->getRotation()][i][2] * direction + y, ratio);
 }

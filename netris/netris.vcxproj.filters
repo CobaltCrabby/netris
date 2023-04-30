@@ -27,7 +27,7 @@
     <ClCompile Include="mino.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tetromino.cpp">
+    <ClCompile Include="tetramino.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
