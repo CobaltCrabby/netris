@@ -93,6 +93,7 @@ void window_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 int dasFrame = 0;
+int downDasFrame = 0;
 bool dasActive = false;
 bool dasCharge = false;
 
@@ -145,17 +146,21 @@ void keyCallback(GLFWwindow* window) {
     int a = glfwGetKey(window, GLFW_KEY_A);
     int s = glfwGetKey(window, GLFW_KEY_S);
 
-    //update das frame (down needs to be here too)
-    if (left && prevLeft || right && prevRight || down && prevDown) {
+    //update das frame
+    if (left && prevLeft || right && prevRight) {
         dasFrame++;
+    }
+
+    if (down && prevDown) {
+        downDasFrame++;
     }
 
     horizontalInput(left, prevLeft, -1);
     horizontalInput(right, prevRight, 1);
 
-    if (dasFrame == 2 && down) {
+    if (downDasFrame == 2 && down) {
         grid->move(0, -1);
-        dasFrame = 0;
+        downDasFrame = 0;
     }
 
     if (a && !prevA) {
