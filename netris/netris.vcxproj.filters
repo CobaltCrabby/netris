@@ -30,10 +30,10 @@
     <ClCompile Include="tetramino.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="queueMino.cpp">
+    <ClCompile Include="UIMino.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="queueTetramino.cpp">
+    <ClCompile Include="UITetramino.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,10 +56,10 @@
     <ClInclude Include="tetramino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="queueMino.h">
+    <ClInclude Include="UIMino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="queueTetramino.h">
+    <ClInclude Include="UITetramino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

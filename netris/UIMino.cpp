@@ -2,9 +2,9 @@
 #include <GLFW/glfw3.h>
 #include "stb_image.h"
 
-#include "queueMino.h"
+#include "UIMino.h"
 
-QueueMino::QueueMino(float x, float y, float size_, enum color c, float rat) {
+UIMino::UIMino(float x, float y, float size_, enum color c, float rat) {
 	screenX = x;
 	screenY = y;
 	size = size_;
@@ -44,14 +44,14 @@ QueueMino::QueueMino(float x, float y, float size_, enum color c, float rat) {
     drawInit(rat);
 }
 
-QueueMino::~QueueMino() {
+UIMino::~UIMino() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
     glDeleteProgram(shaderProgram);
 }
 
-void QueueMino::drawInit(float ratio) {
+void UIMino::drawInit(float ratio) {
     //setting the grid positions
     vertices[0] = screenX + size / ratio;
     vertices[1] = screenY;
@@ -130,14 +130,14 @@ void QueueMino::drawInit(float ratio) {
     stbi_image_free(data);
 }
 
-void QueueMino::draw() {
+void UIMino::draw() {
     glBindTexture(GL_TEXTURE_2D, texture);
     glUseProgram(shaderProgram);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 }
 
-void QueueMino::resize(float ratio) {
+void UIMino::resize(float ratio) {
     vertices[0] = (screenX + size) / ratio;
     vertices[1] = screenY;
     vertices[9] = vertices[0];
@@ -154,6 +154,11 @@ void QueueMino::resize(float ratio) {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);
 }
 
-void QueueMino::changeY(float spread) {
+void UIMino::changeY(float spread) {
     screenY += spread;
+}
+
+void UIMino::move(float x, float y) {
+    screenX = x;
+    screenY = y;
 }

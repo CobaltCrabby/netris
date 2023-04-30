@@ -110,6 +110,7 @@ int prevDown = 0;
 int prevSpace = 0;
 int prevA = 0;
 int prevS = 0;
+int prevD = 0;
 
 void keyCallback(GLFWwindow* window) {
     int left = glfwGetKey(window, GLFW_KEY_LEFT);
@@ -119,6 +120,11 @@ void keyCallback(GLFWwindow* window) {
 
     int a = glfwGetKey(window, GLFW_KEY_A);
     int s = glfwGetKey(window, GLFW_KEY_S);
+    int d = glfwGetKey(window, GLFW_KEY_D);
+
+    if (d && !prevD) {
+        grid->hold();
+    }
 
     //update das frame
     if (left && prevLeft || right && prevRight) {
@@ -155,4 +161,5 @@ void keyCallback(GLFWwindow* window) {
     prevSpace = space;
     prevA = a;
     prevS = s;
+    prevD = d;
 }

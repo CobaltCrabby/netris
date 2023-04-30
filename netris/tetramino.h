@@ -1,6 +1,7 @@
 #pragma once
 #include "mino.h"
 #include "enum.h"
+#include "UITetramino.h"
 
 class Tetramino {
 	Mino* minos[4];
@@ -15,4 +16,5 @@ class Tetramino {
 		enum piece getType();
 		int getRotation();
 		void setRotation(int num);
+		UITetramino* convertToUI(float x, float y, float ratio, float size);
 };

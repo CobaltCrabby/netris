@@ -78,3 +78,7 @@ void Tetramino::setRotation(int mino) {
 	rotation += mino + 4;
 	rotation %= 4;
 }
+
+UITetramino* Tetramino::convertToUI(float x, float y, float ratio, float size) {
+	return new UITetramino(type, 0, ratio, size, x, y, 0);
+}

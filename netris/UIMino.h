@@ -1,7 +1,7 @@
 #pragma once
 #include "enum.h"
 
-class QueueMino {
+class UIMino {
     const char* pvertexShaderSource = "#version 430 core\n"
         "layout (location = 0) in vec3 aPos;\n"
         "layout (location = 1) in vec2 aTexCoord;\n"
@@ -45,10 +45,11 @@ class QueueMino {
         float screenX, screenY, size;
         enum color color;
 
-		QueueMino(float x, float y, float size, enum color c, float ratio);
-		~QueueMino();
+		UIMino(float x, float y, float size, enum color c, float ratio);
+		~UIMino();
 		void drawInit(float ratio);
         void draw();
 		void resize(float ratio);
         void changeY(float spread);
+        void move(float x, float y);
 };

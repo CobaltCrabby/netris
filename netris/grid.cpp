@@ -35,7 +35,7 @@ Grid::Grid(int x, int y) {
     for (int i = 1; i < 7; i++) {
         pieceQueue.push_back(order[i]);
         if (i < 6) {
-            pieceQueuePieces[i - 1] = new QueueTetramino(order[i], i - 1, ratio);
+            pieceQueuePieces[i - 1] = new UITetramino(order[i], i - 1, ratio, 0.06f, 0.7f, 0.65f, 0.2f);
         }
     }
     addTetromino(order[0]);
@@ -57,6 +57,8 @@ void Grid::draw() {
     for (int i = 0; i < 5; i++) {
         pieceQueuePieces[i]->draw();
     }
+
+    if (holdPiece) holdPiece->draw();
 }
 
  
@@ -77,10 +79,12 @@ void Grid::resize(int x, int y) {
             }
         } 
     }
-
+     
     for (int i = 0; i < 5; i++) {
         pieceQueuePieces[i]->resize(ratio);
     }
+
+    if (holdPiece) holdPiece->resize(ratio);
 }
 
 Mino* Grid::add(enum color c, int x, int y) {
@@ -90,6 +94,7 @@ Mino* Grid::add(enum color c, int x, int y) {
 }
 
 void Grid::addTetromino(enum piece p) {
+    delete currentPiece;
     currentPiece = new Tetramino(p);
     currentPiece->addMinos(minoGrid, sizeX, sizeY);
 }
@@ -146,14 +151,17 @@ bool Grid::move(int x, int y) {
 void Grid::hardDrop() {
     while (move(0, -1));
 
+    //print queue 
     for (int i = 0; i < pieceQueue.size(); i++) {
         std::cout << pieceQueue[i] << " ";
     }
     std::cout << endl;
 
+    //make piece the first in queue
     addTetromino(pieceQueue.front());
     pieceQueue.pop_front();
 
+    //add more if needed
     if (pieceQueue.size() == 5) {
         srand((unsigned)time(NULL)); 
         enum piece order[7]{I, O, T, S, Z, L, J};
@@ -165,13 +173,15 @@ void Grid::hardDrop() {
 
     delete pieceQueuePieces[0];
 
+    //move queue visually
     for (int i = 0; i < 4; i++) {
         pieceQueuePieces[i] = pieceQueuePieces[i + 1];
         pieceQueuePieces[i]->moveUp();
         pieceQueuePieces[i]->resize(ratio);
     }
 
-    pieceQueuePieces[4] = new QueueTetramino(pieceQueue[4], 4, ratio);
+    //add new to the end
+    pieceQueuePieces[4] = new UITetramino(pieceQueue[4], 4, ratio, 0.06f, 0.7f, 0.65f, 0.2f);
 }
 
 //1 = cw, -1 = ccw, 2 = 180
@@ -278,4 +288,55 @@ void Grid::rotate(int direction) {
     
     if (direction == 1) currentPiece->setRotation(direction);
     std::cout << endl;
+}
+
+void Grid::hold() {
+    if (holdPiece == nullptr) {
+        holdPiece = currentPiece->convertToUI(-0.7f, 0.65f, ratio, 0.06f);
+        for (int i = 0; i < 4; i++) {
+            int x = currentPiece->getMinos()[i]->getX();
+            int y = currentPiece->getMinos()[i]->getY();
+            minoGrid[x][y] = nullptr;
+            delete currentPiece->getMinos()[i];
+        }
+
+        //make piece the first in queue
+        addTetromino(pieceQueue.front());
+        pieceQueue.pop_front();
+
+        //add more if needed
+        if (pieceQueue.size() == 5) {
+            srand((unsigned)time(NULL));
+            enum piece order[7]{ I, O, T, S, Z, L, J };
+            random_shuffle(&order[0], &order[7]);
+            for (int i = 0; i < 7; i++) {
+                pieceQueue.push_back(order[i]);
+            }
+        }
+
+        delete pieceQueuePieces[0];
+
+        //move queue visually
+        for (int i = 0; i < 4; i++) {
+            pieceQueuePieces[i] = pieceQueuePieces[i + 1];
+            pieceQueuePieces[i]->moveUp();
+            pieceQueuePieces[i]->resize(ratio);
+        }
+
+        //add new to the end
+        pieceQueuePieces[4] = new UITetramino(pieceQueue[4], 4, ratio, 0.06f, 0.7f, 0.65f, 0.2f);
+    }
+    else {
+        //swap hold piece and current piece
+        enum piece type = holdPiece->getType();
+        holdPiece = currentPiece->convertToUI(-0.7f, 0.65f, ratio, 0.06f);
+        for (int i = 0; i < 4; i++) {
+            int x = currentPiece->getMinos()[i]->getX();
+            int y = currentPiece->getMinos()[i]->getY();
+            minoGrid[x][y] = nullptr;
+            delete currentPiece->getMinos()[i];
+        }
+
+        addTetromino(type);
+    }
 }
