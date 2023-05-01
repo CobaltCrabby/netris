@@ -28,47 +28,6 @@ int main(void) {
 
     grid = new Grid(10, 20);
 
-    //o piece
-    grid->add(yellow, 0, 0);
-    grid->add(yellow, 0, 1);
-    grid->add(yellow, 1, 0);
-    grid->add(yellow, 1, 1);
-
-    //z piece
-    grid->add(red, 0, 2);
-    grid->add(red, 0, 3);
-    grid->add(red, 1, 3);
-    grid->add(red, 1, 4);
-
-    //s piece
-    grid->add(green, 2, 0);
-    grid->add(green, 3, 0);
-    grid->add(green, 3, 1);
-    grid->add(green, 4, 1);
-
-    //j piece
-    grid->add(dark_blue, 5, 1);
-    grid->add(dark_blue, 6, 1);
-    grid->add(dark_blue, 7, 1);
-    grid->add(dark_blue, 7, 0);
-
-    //l piece
-    grid->add(orange, 7, 2);
-    grid->add(orange, 8, 2);
-    grid->add(orange, 8, 1);
-    grid->add(orange, 8, 0);
-
-    //i piece
-    grid->add(light_blue, 9, 0);
-    grid->add(light_blue, 9, 1);
-    grid->add(light_blue, 9, 2);
-    grid->add(light_blue, 9, 3);
-
-    //t piece
-    srand((unsigned) time(NULL));
-    //grid->addTetromino(static_cast<piece>((int) rand() % 7));
-    grid->addTetromino(I);
-
     glfwSetWindowSizeCallback(window, window_size_callback);
 
     int frame = 0;
@@ -107,7 +66,12 @@ void window_size_callback(GLFWwindow* window, int width, int height) {
     glfwPollEvents();
 }
 
+int arr = 2;
+int das = 11;
+int sds = 2;
+
 int dasFrame = 0;
+int downDasFrame = 0;
 bool dasActive = false;
 bool dasCharge = false;
 
@@ -120,13 +84,14 @@ void horizontalInput(int input, int prev, int x) {
             dasCharge = true;
         }
         else {
-            if (dasFrame == 11) {
+            if (dasFrame == das) {
                 dasActive = true;
                 dasCharge = false;
                 dasFrame = 0;
             }
 
-            if (dasActive && dasFrame == 2) {
+            if (dasActive && dasFrame == arr) {
+                if (arr == 0) while (grid->move(x, 0));
                 moved = grid->move(x, 0);
                 dasFrame = 0;
             }
@@ -150,6 +115,7 @@ int prevDown = 0;
 int prevSpace = 0;
 int prevA = 0;
 int prevS = 0;
+int prevD = 0;
 
 void keyCallback(GLFWwindow* window) {
     int left = glfwGetKey(window, GLFW_KEY_LEFT);
@@ -159,18 +125,28 @@ void keyCallback(GLFWwindow* window) {
 
     int a = glfwGetKey(window, GLFW_KEY_A);
     int s = glfwGetKey(window, GLFW_KEY_S);
+    int d = glfwGetKey(window, GLFW_KEY_D);
 
-    //update das frame (down needs to be here too)
-    if (left && prevLeft || right && prevRight || down && prevDown) {
+    if (d && !prevD) {
+        grid->hold();
+    }
+
+    //update das frame
+    if (left && prevLeft || right && prevRight) {
         dasFrame++;
+    }
+
+    if (down && prevDown) {
+        downDasFrame++;
     }
 
     horizontalInput(left, prevLeft, -1);
     horizontalInput(right, prevRight, 1);
 
-    if (dasFrame == 2 && down) {
+    if (downDasFrame >= sds && down) {
+        if (sds == 0) while (grid->move(0, -1));
         grid->move(0, -1);
-        dasFrame = 0;
+        downDasFrame = 0;
     }
 
     if (a && !prevA) {
@@ -191,4 +167,5 @@ void keyCallback(GLFWwindow* window) {
     prevSpace = space;
     prevA = a;
     prevS = s;
+    prevD = d;
 }

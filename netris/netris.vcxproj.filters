@@ -27,7 +27,13 @@
     <ClCompile Include="mino.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tetromino.cpp">
+    <ClCompile Include="tetramino.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UIMino.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UITetramino.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,7 +53,13 @@
     <ClInclude Include="stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="tetromino.h">
+    <ClInclude Include="tetramino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UIMino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UITetramino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
