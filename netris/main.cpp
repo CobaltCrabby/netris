@@ -116,6 +116,7 @@ int prevSpace = 0;
 int prevA = 0;
 int prevS = 0;
 int prevD = 0;
+int prevF = 0;
 
 void keyCallback(GLFWwindow* window) {
     int left = glfwGetKey(window, GLFW_KEY_LEFT);
@@ -126,6 +127,7 @@ void keyCallback(GLFWwindow* window) {
     int a = glfwGetKey(window, GLFW_KEY_A);
     int s = glfwGetKey(window, GLFW_KEY_S);
     int d = glfwGetKey(window, GLFW_KEY_D);
+    int f = glfwGetKey(window, GLFW_KEY_F);
 
     if (d && !prevD) {
         grid->hold();
@@ -149,6 +151,10 @@ void keyCallback(GLFWwindow* window) {
         downDasFrame = 0;
     }
 
+    if (f && !prevF) {
+        grid->rotate(2);
+    }
+
     if (a && !prevA) {
         grid->rotate(-1);
     }
@@ -168,4 +174,5 @@ void keyCallback(GLFWwindow* window) {
     prevA = a;
     prevS = s;
     prevD = d;
+    prevF = f;
 }
