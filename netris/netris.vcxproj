@@ -137,6 +137,7 @@
     <ClCompile Include="line.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mino.cpp" />
+    <ClCompile Include="OutlineMino.cpp" />
     <ClCompile Include="UIMino.cpp" />
     <ClCompile Include="UITetramino.cpp" />
     <ClCompile Include="tetramino.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="grid.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="mino.h" />
+    <ClInclude Include="OutlineMino.h" />
     <ClInclude Include="UIMino.h" />
     <ClInclude Include="UITetramino.h" />
     <ClInclude Include="stb_image.h" />
@@ -153,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="mino.png" />
+    <Image Include="outline.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
