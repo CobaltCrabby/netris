@@ -1,4 +1,4 @@
-#include "OutlineMino.h"
+#include "outlineMino.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "stb_image.h"
@@ -131,4 +131,37 @@ int OutlineMino::getX() {
 
 int OutlineMino::getY() {
     return y;
+}
+
+void OutlineMino::draw() {
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glUseProgram(shaderProgram);
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+}
+
+void OutlineMino::move() {
+    y--;
+}
+
+void OutlineMino::resize(float ratio) {
+    vertices[0] = ((-g_x / (2.0f / 0.07f)) + 0.07f * x + 0.07f) / ratio;
+    vertices[1] = (-g_y / (2.0f / 0.07f)) + 0.07f * y + 0.07f;
+    vertices[9] = vertices[0];
+    vertices[10] = vertices[1] - 0.07f;
+    vertices[18] = vertices[0] - 0.07f / ratio;
+    vertices[19] = vertices[10];
+    vertices[27] = vertices[18];
+    vertices[28] = vertices[1];
+
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);
+}
+
+void OutlineMino::changePosition(int _x, int _y) {
+    x = _x;
+    y = _y;
 }

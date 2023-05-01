@@ -137,7 +137,7 @@
     <ClCompile Include="line.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mino.cpp" />
-    <ClCompile Include="OutlineMino.cpp" />
+    <ClCompile Include="outlineMino.cpp" />
     <ClCompile Include="UIMino.cpp" />
     <ClCompile Include="UITetramino.cpp" />
     <ClCompile Include="tetramino.cpp" />
@@ -147,7 +147,7 @@
     <ClInclude Include="grid.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="mino.h" />
-    <ClInclude Include="OutlineMino.h" />
+    <ClInclude Include="outlineMino.h" />
     <ClInclude Include="UIMino.h" />
     <ClInclude Include="UITetramino.h" />
     <ClInclude Include="stb_image.h" />

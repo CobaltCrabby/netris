@@ -42,6 +42,13 @@ Grid::Grid(int x, int y) {
 }
 
 void Grid::draw() {
+    if (currentPiece) {
+        OutlineMino** outlineMinos = currentPiece->getOutlineMinos();
+        for (int i = 0; i < 4; i++) {
+            outlineMinos[i]->draw();
+        }
+    }
+
     for (int i = 0; i < sizeX; i++) {
         for (int j = 0; j < sizeY; j++) {
             if (minoGrid[i][j] != nullptr) {
@@ -97,6 +104,7 @@ void Grid::addTetromino(enum piece p) {
     delete currentPiece;
     currentPiece = new Tetramino(p);
     currentPiece->addMinos(minoGrid, sizeX, sizeY);
+    currentPiece->updateOutline(sizeX, sizeY, minoGrid, ratio);
 }
 
 bool Grid::move(int x, int y) {
@@ -145,6 +153,8 @@ bool Grid::move(int x, int y) {
             minoGrid[nx][ny]->move(x, y, ratio);
         }
     }
+
+    currentPiece->updateOutline(sizeX, sizeY, minoGrid, ratio);
     return true;
 }
 
@@ -294,6 +304,7 @@ void Grid::rotate(int direction) {
     }
     
     if (direction == 1) currentPiece->setRotation(direction);
+    currentPiece->updateOutline(sizeX, sizeY, minoGrid, ratio);
     std::cout << endl;
 }
 
@@ -364,6 +375,7 @@ void Grid::rotate180(const int(*array)[4][2]) {
         minoGrid[newPositions[i][0]][newPositions[i][1]] = currentPiece->getMinos()[i];
     }
 
+    currentPiece->updateOutline(sizeX, sizeY, minoGrid, ratio);
     currentPiece->setRotation(2);
     std::cout << endl;
 }

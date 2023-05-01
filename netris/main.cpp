@@ -69,9 +69,9 @@ void window_size_callback(GLFWwindow* window, int width, int height) {
     glfwPollEvents();
 }
 
-int arr = 2;
-int das = 11;
-int sds = 2;
+int arr = 0;
+int das = 6;
+int sds = 0;
 
 int dasFrame = 0;
 int downDasFrame = 0;
