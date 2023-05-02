@@ -92,6 +92,9 @@ void Grid::resize(int x, int y) {
     }
 
     if (holdPiece) holdPiece->resize(ratio);
+    for (int i = 0; i < 4; i++) {
+        currentPiece->getOutlineMinos()[i]->resize(ratio);
+    }
 }
 
 Mino* Grid::add(enum color c, int x, int y) {
@@ -105,6 +108,9 @@ void Grid::addTetromino(enum piece p) {
     currentPiece = new Tetramino(p);
     currentPiece->addMinos(minoGrid, sizeX, sizeY);
     currentPiece->updateOutline(sizeX, sizeY, minoGrid, ratio);
+    for (int i = 0; i < 4; i++) {
+        currentPiece->getMinos()[i]->resize(ratio);
+    }
 }
 
 bool Grid::move(int x, int y) {
@@ -193,6 +199,7 @@ void Grid::hardDrop() {
 
     //add new to the end
     pieceQueuePieces[4] = new UITetramino(pieceQueue[4], 4, ratio, 0.06f, 0.7f, 0.65f, 0.2f);
+    pieceQueuePieces[4]->resize(ratio);
 }
 
 //1 = cw, -1 = ccw, 2 = 180
@@ -373,7 +380,7 @@ void Grid::rotate180(const int(*array)[4][2]) {
 
     for (int i = 0; i < 4; i++) {
         minoGrid[newPositions[i][0]][newPositions[i][1]] = currentPiece->getMinos()[i];
-    }
+    } 
 
     currentPiece->updateOutline(sizeX, sizeY, minoGrid, ratio);
     currentPiece->setRotation(2);
@@ -383,6 +390,7 @@ void Grid::rotate180(const int(*array)[4][2]) {
 void Grid::hold() {
     if (holdPiece == nullptr) {
         holdPiece = currentPiece->convertToUI(-0.7f, 0.65f, ratio, 0.06f);
+        holdPiece->resize(ratio);
         for (int i = 0; i < 4; i++) {
             int x = currentPiece->getMinos()[i]->getX();
             int y = currentPiece->getMinos()[i]->getY();
@@ -415,11 +423,13 @@ void Grid::hold() {
 
         //add new to the end
         pieceQueuePieces[4] = new UITetramino(pieceQueue[4], 4, ratio, 0.06f, 0.7f, 0.65f, 0.2f);
+        pieceQueuePieces[4]->resize(ratio);
     }
     else {
         //swap hold piece and current piece
         enum piece type = holdPiece->getType();
         holdPiece = currentPiece->convertToUI(-0.7f, 0.65f, ratio, 0.06f);
+        holdPiece->resize(ratio);
         for (int i = 0; i < 4; i++) {
             int x = currentPiece->getMinos()[i]->getX();
             int y = currentPiece->getMinos()[i]->getY();
