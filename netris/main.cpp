@@ -10,6 +10,7 @@ Grid* grid;
 
 void window_size_callback(GLFWwindow* window, int width, int height);
 void keyCallback(GLFWwindow* window);
+void nextKeyPress(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 int main(void) {
     GLFWwindow* window;
@@ -29,6 +30,7 @@ int main(void) {
     grid = new Grid(10, 20);
 
     glfwSetWindowSizeCallback(window, window_size_callback);
+    glfwSetKeyCallback(window, nextKeyPress);
 
     int frame = 0;
 
@@ -178,4 +180,8 @@ void keyCallback(GLFWwindow* window) {
     prevS = s;
     prevD = d;
     prevF = f;
+}
+
+void nextKeyPress(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    std::cout << KeyCodeToString((enum KeyCode) key) << std::endl;
 }
