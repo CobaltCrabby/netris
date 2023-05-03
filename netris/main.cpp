@@ -11,6 +11,7 @@ Grid* grid;
 void window_size_callback(GLFWwindow* window, int width, int height);
 void keyCallback(GLFWwindow* window);
 void nextKeyPress(GLFWwindow* window, int key, int scancode, int action, int mods);
+void window2Render(GLFWwindow* window);
 
 GLFWwindow* window2;
 bool window2Up = false;
@@ -58,6 +59,8 @@ int main(void) {
         glfwSwapBuffers(window);
         glfwPollEvents();
         keyCallback(window);
+
+        if (window2) window2Render(window2);
         
         frame++;
 
@@ -221,4 +224,16 @@ void nextKeyPress(GLFWwindow* window, int key, int scancode, int action, int mod
         window2Up = true;
     }
     std::cout << KeyCodeToString((enum KeyCode) key) << std::endl;
+}
+
+void window2Render(GLFWwindow* window) {
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+    glViewport(0, 0, width, height);
+
+    glClearColor(32.0f / 255.0f, 32.0f / 255.0f, 32.0f / 255.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glfwSwapBuffers(window);
+    glfwPollEvents();
 }
