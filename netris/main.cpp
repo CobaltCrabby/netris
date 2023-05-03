@@ -12,6 +12,9 @@ void window_size_callback(GLFWwindow* window, int width, int height);
 void keyCallback(GLFWwindow* window);
 void nextKeyPress(GLFWwindow* window, int key, int scancode, int action, int mods);
 
+GLFWwindow* window2;
+bool window2Up = false;
+
 int main(void) {
     GLFWwindow* window;
 
@@ -20,6 +23,11 @@ int main(void) {
 
     window = glfwCreateWindow(640, 640, "netris", NULL, NULL);
     if (!window) {
+        glfwTerminate();
+        return -1;
+    }
+
+    if (window2Up && !window2) {
         glfwTerminate();
         return -1;
     }
@@ -52,6 +60,12 @@ int main(void) {
         keyCallback(window);
         
         frame++;
+
+        if (window2 && glfwWindowShouldClose(window2)) {
+            glfwDestroyWindow(window2);
+            window2Up = false;
+            window2 = nullptr;
+        }
     }
 
     glfwTerminate();
@@ -113,6 +127,15 @@ void horizontalInput(int input, int prev, int x) {
     }
 }
 
+int rightBind = GLFW_KEY_RIGHT;
+int downBind = GLFW_KEY_DOWN;
+int leftBind = GLFW_KEY_LEFT;
+int hardDropBind = GLFW_KEY_SPACE;
+int ccwBind = GLFW_KEY_A;
+int cwBind = GLFW_KEY_S;
+int holdBind = GLFW_KEY_D;
+int _180Bind = GLFW_KEY_F;
+
 int prevLeft = 0;
 int prevRight = 0;
 int prevDown = 0;
@@ -123,15 +146,15 @@ int prevD = 0;
 int prevF = 0;
 
 void keyCallback(GLFWwindow* window) {
-    int left = glfwGetKey(window, GLFW_KEY_LEFT);
-    int right = glfwGetKey(window, GLFW_KEY_RIGHT);
-    int down = glfwGetKey(window, GLFW_KEY_DOWN);
-    int space = glfwGetKey(window, GLFW_KEY_SPACE);
+    int left = glfwGetKey(window, leftBind);
+    int right = glfwGetKey(window, rightBind);
+    int down = glfwGetKey(window, downBind);
+    int space = glfwGetKey(window, hardDropBind);
 
-    int a = glfwGetKey(window, GLFW_KEY_A);
-    int s = glfwGetKey(window, GLFW_KEY_S);
-    int d = glfwGetKey(window, GLFW_KEY_D);
-    int f = glfwGetKey(window, GLFW_KEY_F);
+    int a = glfwGetKey(window, ccwBind);
+    int s = glfwGetKey(window, cwBind);
+    int d = glfwGetKey(window, holdBind);
+    int f = glfwGetKey(window, _180Bind);
 
 
     if (space && !prevSpace) {
@@ -182,6 +205,20 @@ void keyCallback(GLFWwindow* window) {
     prevF = f;
 }
 
+bool settingBind = false;
+
 void nextKeyPress(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (settingBind && action == GLFW_PRESS) {
+        //hardDropBind = key;
+        settingBind = false;
+    }
+    else if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
+        settingBind = true;
+    }
+
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS && !window2Up){ 
+        window2 = glfwCreateWindow(640, 480, "netris settings", NULL, window);
+        window2Up = true;
+    }
     std::cout << KeyCodeToString((enum KeyCode) key) << std::endl;
 }
