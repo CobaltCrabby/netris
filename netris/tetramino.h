@@ -15,7 +15,8 @@ class Tetramino {
 		void addMinos(Mino*** minoGrid, int gx, int gy);
 		Mino* addToGrid(Mino*** minoGrid, enum color c, int x, int y, int gx, int gy, int i);
 		Mino** getMinos();
-		void updateOutline();
+		OutlineMino** getOutlineMinos();
+		void updateOutline(int sizeX, int sizeY, Mino*** minoGrid, float ratio);
 		enum piece getType();
 		int getRotation();
 		void setRotation(int num);

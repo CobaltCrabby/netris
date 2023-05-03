@@ -1,6 +1,6 @@
 #include "tetramino.h"
 #include "enum.h"
-#include "OutlineMino.h"
+#include "outlineMino.h"
 
 Tetramino::Tetramino(enum piece shape) {
 	type = shape;
@@ -68,24 +68,52 @@ Mino** Tetramino::getMinos() {
 	return minos;
 }
 
-void Tetramino::updateOutline() {
+OutlineMino** Tetramino::getOutlineMinos() {
+	return outlineMinos;
+}
+
+void Tetramino::updateOutline(int sizeX, int sizeY, Mino*** minoGrid, float ratio) {
 	for (int i = 0; i < 4; i++) {
-		int ox = minos[i]->getX();
-		int oy = minos[i]->getY();
-		int nx = ox;
-		int ny = oy - 1;
+		outlineMinos[i]->changePosition(minos[i]->getX(), minos[i]->getY());
+		outlineMinos[i]->resize(ratio);
+	}
 
-		//dont move out of board
-		if (nx < 0 || nx >= sizeX || ny < 0 || ny >= sizeY) return false;
+	bool canLower = true;
+	while (canLower) {
+		for (int i = 0; i < 4; i++) {
+			int ox = outlineMinos[i]->getX();
+			int oy = outlineMinos[i]->getY();
+			int nx = ox;
+			int ny = oy - 1;
 
-		//dont move into other pieces
-		bool isPieceMino = false;
-		for (int j = 0; j < 4; j++) {
-			int px = minos[j]->getX();
-			int py = minos[j]->getY();
-			if (!isPieceMino && nx == px && ny == py) isPieceMino = true;
+			//dont move out of board
+			if (ny < 0) {
+				canLower = false;
+				break;
+			}
+
+			//dont move into other pieces
+			bool isPieceMino = false;
+			for (int j = 0; j < 4; j++) {
+				int px = minos[j]->getX();
+				int py = minos[j]->getY();
+				if (!isPieceMino && nx == px && ny == py) isPieceMino = true;
+			}
+			if (minoGrid[nx][ny] != nullptr && !isPieceMino) {
+				canLower = false;
+				break;
+			}
 		}
-		if (minoGrid[nx][ny] != nullptr && !isPieceMino) return false;
+
+		if (!canLower) break;
+
+		for (int i = 0; i < 4; i++) {
+			int ox = outlineMinos[i]->getX();
+			int oy = outlineMinos[i]->getY();
+
+			outlineMinos[i]->move();
+			outlineMinos[i]->resize(ratio);
+		}
 	}
 }
 

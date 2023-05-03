@@ -42,7 +42,7 @@ int main(void) {
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0, 0, width, height);
 
-        glClearColor(0.0f, 70.0f / 255.0f, 90.0f / 255.0f, 1.0f);
+        glClearColor(32.0f / 255.0f, 32.0f / 255.0f, 32.0f / 255.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         grid->draw();
@@ -60,8 +60,7 @@ int main(void) {
 
 void window_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
-
-    glClearColor(0.0f, 70.0f / 255.0f, 90.0f / 255.0f, 1.0f);
+    glClearColor(32.0f / 255.0f, 32.0f / 255.0f, 32.0f / 255.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     grid->resize(width, height);
@@ -71,9 +70,9 @@ void window_size_callback(GLFWwindow* window, int width, int height) {
     glfwPollEvents();
 }
 
-int arr = 2;
-int das = 11;
-int sds = 2;
+int arr = 0;
+int das = 7;
+int sds = 0;
 
 int dasFrame = 0;
 int downDasFrame = 0;
@@ -134,6 +133,11 @@ void keyCallback(GLFWwindow* window) {
     int d = glfwGetKey(window, GLFW_KEY_D);
     int f = glfwGetKey(window, GLFW_KEY_F);
 
+
+    if (space && !prevSpace) {
+        grid->hardDrop();
+    }
+
     if (d && !prevD) {
         grid->hold();
     }
@@ -166,10 +170,6 @@ void keyCallback(GLFWwindow* window) {
 
     if (s && !prevS) {
         grid->rotate(1);
-    }
-
-    if (space && !prevSpace) {
-        grid->hardDrop();
     }
 
     prevLeft = left;

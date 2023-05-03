@@ -15,7 +15,7 @@ const char* lfragmentShaderSource = "#version 430 core\n"
 "out vec4 FragColor;\n"
 "void main()\n"
 "{\n"
-"   FragColor = vec4(32.0f/255.0f, 32.0f/255.0f, 32.0f/255.0f, 1.0f);\n"
+"   FragColor = vec4(110.0f/255, 110.0f/255, 110.0f/255, 1.0f);\n"
 "}\n\0";
 
 
