@@ -5,13 +5,16 @@
 
 #include "grid.h"
 #include "enum.h"
+#include "button.h"
 
 Grid* grid;
+Button* bind;
 
 void window_size_callback(GLFWwindow* window, int width, int height);
 void keyCallback(GLFWwindow* window);
 void nextKeyPress(GLFWwindow* window, int key, int scancode, int action, int mods);
 void window2Render(GLFWwindow* window);
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 
 GLFWwindow* window2;
 bool window2Up = false;
@@ -47,6 +50,8 @@ int main(void) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     while (!glfwWindowShouldClose(window)) {
+        glfwMakeContextCurrent(window);
+
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0, 0, width, height);
@@ -57,11 +62,13 @@ int main(void) {
         grid->draw();
 
         glfwSwapBuffers(window);
-        glfwPollEvents();
         keyCallback(window);
 
-        if (window2) window2Render(window2);
-        
+        if (window2) {
+            glfwMakeContextCurrent(window2);
+            window2Render(window2);
+        }
+
         frame++;
 
         if (window2 && glfwWindowShouldClose(window2)) {
@@ -69,6 +76,8 @@ int main(void) {
             window2Up = false;
             window2 = nullptr;
         }
+
+        glfwPollEvents();
     }
 
     glfwTerminate();
@@ -211,29 +220,41 @@ void keyCallback(GLFWwindow* window) {
 bool settingBind = false;
 
 void nextKeyPress(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    if (settingBind && action == GLFW_PRESS) {
-        //hardDropBind = key;
+    if (window2Up && settingBind && action == GLFW_PRESS) {
+        hardDropBind = key;
         settingBind = false;
     }
-    else if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
+    else if (window2Up && key == GLFW_KEY_Z && action == GLFW_PRESS) {
         settingBind = true;
     }
 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS && !window2Up){ 
         window2 = glfwCreateWindow(640, 480, "netris settings", NULL, window);
+        glfwSetKeyCallback(window2, nextKeyPress);
+        glfwSetMouseButtonCallback(window, mouseButtonCallback);
+        glfwMakeContextCurrent(window2);
+        bind = new Button(0.15f, 0.15f, 0.3f, 0.3f, "button.png");
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         window2Up = true;
     }
+
     std::cout << KeyCodeToString((enum KeyCode) key) << std::endl;
 }
 
-void window2Render(GLFWwindow* window) {
+void window2Render(GLFWwindow* window2) {
     int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
+    glfwGetFramebufferSize(window2, &width, &height);
     glViewport(0, 0, width, height);
 
     glClearColor(32.0f / 255.0f, 32.0f / 255.0f, 32.0f / 255.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glfwSwapBuffers(window);
-    glfwPollEvents();
+    bind->draw();
+        
+    glfwSwapBuffers(window2);
+}
+
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    if (!window2Up) return;
 }

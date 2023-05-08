@@ -133,6 +133,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="button.cpp" />
+    <ClCompile Include="button.h" />
     <ClCompile Include="grid.cpp" />
     <ClCompile Include="line.cpp" />
     <ClCompile Include="main.cpp" />
@@ -154,6 +156,7 @@
     <ClInclude Include="tetramino.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="button.png" />
     <Image Include="mino.png" />
     <Image Include="outline.png" />
   </ItemGroup>

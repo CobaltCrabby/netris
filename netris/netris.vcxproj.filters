@@ -36,6 +36,15 @@
     <ClCompile Include="UITetramino.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="outlineMino.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="button.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="button.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enum.h">
@@ -62,9 +71,18 @@
     <ClInclude Include="UITetramino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="outlineMino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="mino.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="outline.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="button.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
