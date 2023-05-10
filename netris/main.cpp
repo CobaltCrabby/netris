@@ -5,11 +5,21 @@
 
 #include "grid.h"
 #include "enum.h"
+#include "button.h"
 
 Grid* grid;
+Button* bind;
 
 void window_size_callback(GLFWwindow* window, int width, int height);
 void keyCallback(GLFWwindow* window);
+void nextKeyPress(GLFWwindow* window, int key, int scancode, int action, int mods);
+void keyBindPress(GLFWwindow* window, int key, int scancode, int action, int mods);
+void window2Render(GLFWwindow* window);
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+
+GLFWwindow* window2;
+bool window2Up = false;
+bool waitingForBind = false;
 
 int main(void) {
     GLFWwindow* window;
@@ -23,30 +33,53 @@ int main(void) {
         return -1;
     }
 
+    if (window2Up && !window2) {
+        glfwTerminate();
+        return -1;
+    }
+
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
     grid = new Grid(10, 20);
 
     glfwSetWindowSizeCallback(window, window_size_callback);
+    glfwSetKeyCallback(window, nextKeyPress);
 
     int frame = 0;
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     while (!glfwWindowShouldClose(window)) {
+        glfwMakeContextCurrent(window);
+
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0, 0, width, height);
 
-        glClearColor(0.0f, 70.0f / 255.0f, 90.0f / 255.0f, 1.0f);
+        glClearColor(32.0f / 255.0f, 32.0f / 255.0f, 32.0f / 255.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         grid->draw();
 
         glfwSwapBuffers(window);
-        glfwPollEvents();
         keyCallback(window);
-        
+
+        if (window2) {
+            glfwMakeContextCurrent(window2);
+            window2Render(window2);
+        }
+
         frame++;
+
+        if (window2 && glfwWindowShouldClose(window2)) {
+            glfwDestroyWindow(window2);
+            window2Up = false;
+            window2 = nullptr;
+        }
+
+        glfwPollEvents();
     }
 
     glfwTerminate();
@@ -55,8 +88,7 @@ int main(void) {
 
 void window_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
-
-    glClearColor(0.0f, 70.0f / 255.0f, 90.0f / 255.0f, 1.0f);
+    glClearColor(32.0f / 255.0f, 32.0f / 255.0f, 32.0f / 255.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     grid->resize(width, height);
@@ -66,9 +98,9 @@ void window_size_callback(GLFWwindow* window, int width, int height) {
     glfwPollEvents();
 }
 
-int arr = 2;
-int das = 11;
-int sds = 2;
+int arr = 0;
+int das = 7;
+int sds = 0;
 
 int dasFrame = 0;
 int downDasFrame = 0;
@@ -109,6 +141,17 @@ void horizontalInput(int input, int prev, int x) {
     }
 }
 
+int rightBind = GLFW_KEY_RIGHT;
+int downBind = GLFW_KEY_DOWN;
+int leftBind = GLFW_KEY_LEFT;
+int hardDropBind = GLFW_KEY_SPACE;
+int ccwBind = GLFW_KEY_A;
+int cwBind = GLFW_KEY_S;
+int holdBind = GLFW_KEY_D;
+int _180Bind = GLFW_KEY_F;
+
+int* currentBind = &hardDropBind;
+
 int prevLeft = 0;
 int prevRight = 0;
 int prevDown = 0;
@@ -116,16 +159,23 @@ int prevSpace = 0;
 int prevA = 0;
 int prevS = 0;
 int prevD = 0;
+int prevF = 0;
 
 void keyCallback(GLFWwindow* window) {
-    int left = glfwGetKey(window, GLFW_KEY_LEFT);
-    int right = glfwGetKey(window, GLFW_KEY_RIGHT);
-    int down = glfwGetKey(window, GLFW_KEY_DOWN);
-    int space = glfwGetKey(window, GLFW_KEY_SPACE);
+    int left = glfwGetKey(window, leftBind);
+    int right = glfwGetKey(window, rightBind);
+    int down = glfwGetKey(window, downBind);
+    int space = glfwGetKey(window, hardDropBind);
 
-    int a = glfwGetKey(window, GLFW_KEY_A);
-    int s = glfwGetKey(window, GLFW_KEY_S);
-    int d = glfwGetKey(window, GLFW_KEY_D);
+    int a = glfwGetKey(window, ccwBind);
+    int s = glfwGetKey(window, cwBind);
+    int d = glfwGetKey(window, holdBind);
+    int f = glfwGetKey(window, _180Bind);
+
+
+    if (space && !prevSpace) {
+        grid->hardDrop();
+    }
 
     if (d && !prevD) {
         grid->hold();
@@ -149,16 +199,16 @@ void keyCallback(GLFWwindow* window) {
         downDasFrame = 0;
     }
 
+    if (f && !prevF) {
+        grid->rotate(2);
+    }
+
     if (a && !prevA) {
         grid->rotate(-1);
     }
 
     if (s && !prevS) {
         grid->rotate(1);
-    }
-
-    if (space && !prevSpace) {
-        grid->hardDrop();
     }
 
     prevLeft = left;
@@ -168,4 +218,64 @@ void keyCallback(GLFWwindow* window) {
     prevA = a;
     prevS = s;
     prevD = d;
+    prevF = f;
+}
+
+bool settingBind = false;
+
+void nextKeyPress(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (waitingForBind && action == GLFW_PRESS) {
+        *currentBind = key;
+        waitingForBind = false;
+    }
+
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS && !window2Up){ 
+        window2 = glfwCreateWindow(640, 480, "netris settings", NULL, window);
+        glfwSetKeyCallback(window2, keyBindPress);
+        glfwSetMouseButtonCallback(window2, mouseButtonCallback);
+        glfwMakeContextCurrent(window2);
+        
+        bind = new Button(0.15f, 0.15f, 0.3f, 0.3f, "button.png");
+        
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        window2Up = true;
+    }
+
+    std::cout << KeyCodeToString((enum KeyCode) key) << std::endl;
+}
+
+void keyBindPress(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (waitingForBind && action == GLFW_PRESS) {
+        *currentBind = key;
+        waitingForBind = false;
+    }
+}
+
+void window2Render(GLFWwindow* window2) {
+    int width, height;
+    glfwGetFramebufferSize(window2, &width, &height);
+    glViewport(0, 0, width, height);
+
+    glClearColor(32.0f / 255.0f, 32.0f / 255.0f, 32.0f / 255.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    bind->draw();
+        
+    glfwSwapBuffers(window2);
+}
+
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    if (!window2Up) return;
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+        int width, height;
+        glfwGetWindowSize(window, &width, &height);
+
+        if (bind->checkPress(xpos, ypos, width, height)) {
+            waitingForBind = true;
+        }
+    }
 }

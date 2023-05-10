@@ -104,6 +104,7 @@ class Grid {
 		bool move(int x, int y);
 		void hardDrop();
 		void rotate(int direction);
+		void rotate180(const int(*array)[4][2]);
 		void hold();
 		void clear();
 };

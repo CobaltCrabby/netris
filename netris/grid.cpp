@@ -42,6 +42,13 @@ Grid::Grid(int x, int y) {
 }
 
 void Grid::draw() {
+    if (currentPiece) {
+        OutlineMino** outlineMinos = currentPiece->getOutlineMinos();
+        for (int i = 0; i < 4; i++) {
+            outlineMinos[i]->draw();
+        }
+    }
+
     for (int i = 0; i < sizeX; i++) {
         for (int j = 0; j < sizeY; j++) {
             if (minoGrid[i][j] != nullptr) {
@@ -85,6 +92,9 @@ void Grid::resize(int x, int y) {
     }
 
     if (holdPiece) holdPiece->resize(ratio);
+    for (int i = 0; i < 4; i++) {
+        currentPiece->getOutlineMinos()[i]->resize(ratio);
+    }
 }
 
 Mino* Grid::add(enum color c, int x, int y) {
@@ -97,6 +107,10 @@ void Grid::addTetromino(enum piece p) {
     delete currentPiece;
     currentPiece = new Tetramino(p);
     currentPiece->addMinos(minoGrid, sizeX, sizeY);
+    currentPiece->updateOutline(sizeX, sizeY, minoGrid, ratio);
+    for (int i = 0; i < 4; i++) {
+        currentPiece->getMinos()[i]->resize(ratio);
+    }
 }
 
 bool Grid::move(int x, int y) {
@@ -145,6 +159,8 @@ bool Grid::move(int x, int y) {
             minoGrid[nx][ny]->move(x, y, ratio);
         }
     }
+
+    currentPiece->updateOutline(sizeX, sizeY, minoGrid, ratio);
     return true;
 }
 
@@ -183,10 +199,12 @@ void Grid::hardDrop() {
 
     //add new to the end
     pieceQueuePieces[4] = new UITetramino(pieceQueue[4], 4, ratio, 0.06f, 0.7f, 0.65f, 0.2f);
+    pieceQueuePieces[4]->resize(ratio);
 }
 
 //1 = cw, -1 = ccw, 2 = 180
 void Grid::rotate(int direction) {
+
     const int(*array)[4][2] = S_ROTATION;
     int offsetX = 0;
     int offsetY = 0;
@@ -214,6 +232,11 @@ void Grid::rotate(int direction) {
         case T:
             array = T_ROTATION;
             break;
+    }
+
+    if (direction == 2) {
+        rotate180(array);
+        return;
     }
 
     for (int k = 0; k < 5; k++) {
@@ -288,12 +311,86 @@ void Grid::rotate(int direction) {
     }
     
     if (direction == 1) currentPiece->setRotation(direction);
+    currentPiece->updateOutline(sizeX, sizeY, minoGrid, ratio);
+    std::cout << endl;
+}
+
+void Grid::rotate180(const int(*array)[4][2]) {
+    int offsetX = 0;
+    int offsetY = 0;
+    bool cont;
+
+    //get correct kick table
+    const int(*kickTable)[6][2] = KICK_TABLE_180;
+
+    for (int k = 0; k < 6; k++) {
+        cont = false;
+
+        int lol = currentPiece->getRotation();
+        offsetX = kickTable[lol][k][0];
+        offsetY = kickTable[lol][k][1];
+
+        //test every block
+        for (int i = 0; i < 4; i++) {
+            int nx = currentPiece->getMinos()[i]->getX() + array[currentPiece->getRotation()][i][0] + array[(currentPiece->getRotation() + 1) % 4][i][0] + offsetX;
+            int ny = currentPiece->getMinos()[i]->getY() + array[currentPiece->getRotation()][i][1] + array[(currentPiece->getRotation() + 1) % 4][i][1] + offsetY;
+
+            //dont move out of board
+            if (nx < 0 || nx >= sizeX || ny < 0 || ny >= sizeY) {
+                std::cout << nx << " " << ny << endl;
+                cont = true;
+                break;
+            }
+
+            //dont move into other pieces
+            bool isPieceMino = false;
+            for (int j = 0; j < 4; j++) {
+                int px = currentPiece->getMinos()[j]->getX();
+                int py = currentPiece->getMinos()[j]->getY();
+                if (!isPieceMino && nx == px && ny == py) isPieceMino = true;
+            }
+
+            if (minoGrid[nx][ny] != nullptr && !isPieceMino) {
+                cont = true;
+                break;
+            }
+        }
+
+        if (!cont) break;
+    }
+
+    if (cont) return;
+
+    int newPositions[4][2];
+
+    //calculate new positions and set them
+    for (int i = 0; i < 4; i++) {
+        int ox = currentPiece->getMinos()[i]->getX();
+        int oy = currentPiece->getMinos()[i]->getY();
+        int nx = ox + array[currentPiece->getRotation()][i][0] + array[(currentPiece->getRotation() + 1) % 4][i][0] + offsetX;
+        int ny = oy + array[currentPiece->getRotation()][i][1] + array[(currentPiece->getRotation() + 1) % 4][i][1] + offsetY;
+
+        std::cout << "180: " << ox << ", " << oy << " to " << nx << ", " << ny << " with offsets " << offsetX << ", " << offsetY << endl;
+        newPositions[i][0] = nx;
+        newPositions[i][1] = ny;
+
+        minoGrid[ox][oy] = nullptr;
+        currentPiece->getMinos()[i]->move(nx - ox, ny - oy, ratio);
+    }
+
+    for (int i = 0; i < 4; i++) {
+        minoGrid[newPositions[i][0]][newPositions[i][1]] = currentPiece->getMinos()[i];
+    } 
+
+    currentPiece->updateOutline(sizeX, sizeY, minoGrid, ratio);
+    currentPiece->setRotation(2);
     std::cout << endl;
 }
 
 void Grid::hold() {
     if (holdPiece == nullptr) {
         holdPiece = currentPiece->convertToUI(-0.7f, 0.65f, ratio, 0.06f);
+        holdPiece->resize(ratio);
         for (int i = 0; i < 4; i++) {
             int x = currentPiece->getMinos()[i]->getX();
             int y = currentPiece->getMinos()[i]->getY();
@@ -326,11 +423,13 @@ void Grid::hold() {
 
         //add new to the end
         pieceQueuePieces[4] = new UITetramino(pieceQueue[4], 4, ratio, 0.06f, 0.7f, 0.65f, 0.2f);
+        pieceQueuePieces[4]->resize(ratio);
     }
     else {
         //swap hold piece and current piece
         enum piece type = holdPiece->getType();
         holdPiece = currentPiece->convertToUI(-0.7f, 0.65f, ratio, 0.06f);
+        holdPiece->resize(ratio);
         for (int i = 0; i < 4; i++) {
             int x = currentPiece->getMinos()[i]->getX();
             int y = currentPiece->getMinos()[i]->getY();
