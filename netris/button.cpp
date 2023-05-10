@@ -2,6 +2,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "stb_image.h"
+#include <iostream>
 
 Button::Button(float _x, float _y, float _w, float _h, const char* file) {
 	x = _x;
@@ -97,4 +98,14 @@ void Button::draw() {
     glUseProgram(shaderProgram);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+}
+
+bool Button::checkPress(double _x, double _y, int wx, int wy) {
+    float nx = ((float) _x * 2 / wx) - 1;
+    float ny = ((float) _y * 2 / wy) - 1;
+    if (x >= nx && x - width <= nx && y >= ny && y - height <= ny) {
+        std::cout << "i be clicking" << std::endl;
+        return true;
+    }
+    return false;
 }

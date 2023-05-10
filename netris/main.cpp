@@ -13,11 +13,13 @@ Button* bind;
 void window_size_callback(GLFWwindow* window, int width, int height);
 void keyCallback(GLFWwindow* window);
 void nextKeyPress(GLFWwindow* window, int key, int scancode, int action, int mods);
+void keyBindPress(GLFWwindow* window, int key, int scancode, int action, int mods);
 void window2Render(GLFWwindow* window);
 void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 
 GLFWwindow* window2;
 bool window2Up = false;
+bool waitingForBind = false;
 
 int main(void) {
     GLFWwindow* window;
@@ -148,6 +150,8 @@ int cwBind = GLFW_KEY_S;
 int holdBind = GLFW_KEY_D;
 int _180Bind = GLFW_KEY_F;
 
+int* currentBind = &hardDropBind;
+
 int prevLeft = 0;
 int prevRight = 0;
 int prevDown = 0;
@@ -220,26 +224,33 @@ void keyCallback(GLFWwindow* window) {
 bool settingBind = false;
 
 void nextKeyPress(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    if (window2Up && settingBind && action == GLFW_PRESS) {
-        hardDropBind = key;
-        settingBind = false;
-    }
-    else if (window2Up && key == GLFW_KEY_Z && action == GLFW_PRESS) {
-        settingBind = true;
+    if (waitingForBind && action == GLFW_PRESS) {
+        *currentBind = key;
+        waitingForBind = false;
     }
 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS && !window2Up){ 
         window2 = glfwCreateWindow(640, 480, "netris settings", NULL, window);
-        glfwSetKeyCallback(window2, nextKeyPress);
-        glfwSetMouseButtonCallback(window, mouseButtonCallback);
+        glfwSetKeyCallback(window2, keyBindPress);
+        glfwSetMouseButtonCallback(window2, mouseButtonCallback);
         glfwMakeContextCurrent(window2);
+        
         bind = new Button(0.15f, 0.15f, 0.3f, 0.3f, "button.png");
+        
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         window2Up = true;
     }
 
     std::cout << KeyCodeToString((enum KeyCode) key) << std::endl;
+}
+
+void keyBindPress(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (waitingForBind && action == GLFW_PRESS) {
+        *currentBind = key;
+        waitingForBind = false;
+    }
 }
 
 void window2Render(GLFWwindow* window2) {
@@ -257,4 +268,14 @@ void window2Render(GLFWwindow* window2) {
 
 void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
     if (!window2Up) return;
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+        int width, height;
+        glfwGetWindowSize(window, &width, &height);
+
+        if (bind->checkPress(xpos, ypos, width, height)) {
+            waitingForBind = true;
+        }
+    }
 }

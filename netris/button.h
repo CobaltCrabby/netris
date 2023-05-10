@@ -45,4 +45,5 @@ class Button {
         ~Button();
         void drawInit();
         void draw();
+        bool checkPress(double x, double y, int wx, int wy);
 };
