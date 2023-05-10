@@ -9,24 +9,28 @@ mem.on('error', (err) => {
     console.log(`REDIS ERROR: ${err}`);
 });
 
-app.get('/', (req, res) => {
-    res.send('KENTRIS');
-});
-
 /* access session by id. */
-app.get('/session/:id', (req, res) => {
+app.get('/session/:id', async(req, res) => {
+    await mem.connect();
+    await mem.set('e', 'true');
+    const v = await mem.get('e')
 });
 
 /* update session by id. */
-app.put('/session/:id', (req, res) => {
+app.put('/session/:id', async(req, res) => {
+    await mem.connect();
 });
 
 /* create a new session, returns id. */
-app.post('/newsession', (req, res) => {
+app.get('/newsession', async(req, res) => {
+    await mem.connect();
+    const id = Math.floor((Math.random()*10000)).toString();
+    res.send(id);
 });
 
 /* End session. */
-app.delete('/endsession/:id', (req, res) => {
+app.delete('/endsession/:id', async(req, res) => {
+    await mem.connect();
 });
 
 app.listen(port, () => {
