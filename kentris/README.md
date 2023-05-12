@@ -1,6 +1,9 @@
 # KENTRIS
 Kentris Evolved Networked Tetris Response Intelligence System
 
+## requirements
+setup a redis server, thats it
+
 ## routes
 | route                | description |
 |----------------------|-----------|
