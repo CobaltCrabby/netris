@@ -2,7 +2,8 @@
 Kentris Evolved Networked Tetris Response Intelligence System
 
 ## routes
-|----------------------|-----------------------------------------------|
+| route                | description |
+|----------------------|-----------|
 | /asUser/<user>       | be a user |
 |----------------------|-----------------------------------------------|
 | /asUser/<user>/lose  | make it known that your user has lost |
