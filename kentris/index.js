@@ -10,7 +10,7 @@ mem.on('error', (err) => {
 });
 
 /* pop clears of a user */
-app.get('/user/:u/getClears', async(req, res) => {
+app.get('/user/:u/clears', async(req, res) => {
     c = await mem.get(`kentris:${req.params.u}:clears`);
     mem.set(`kentris:${req.params.u}:clears`, '0');
     res.send(c);
@@ -18,6 +18,11 @@ app.get('/user/:u/getClears', async(req, res) => {
 
 app.get('/asUser/:u/lose', async(req, res) => {
     await mem.set(`kentris:${req.params.u}:lost`, '1');
+    res.send();
+});
+
+app.get('/user/:u/lost', async(req, res) => {
+    res.send(await mem.get(`kentris:${req.params.u}:lost`));
 });
 
 /* update clears. */
