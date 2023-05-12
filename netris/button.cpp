@@ -4,12 +4,13 @@
 #include "stb_image.h"
 #include <iostream>
 
-Button::Button(float _x, float _y, float _w, float _h, const char* file) {
+Button::Button(float _x, float _y, float _w, float _h, const char* file, int* _bind) {
 	x = _x;
 	y = _y;
 	width = _w;
 	height = _h;
 	textureName = file;
+    bind = _bind;
 
     drawInit();
 }
@@ -104,8 +105,28 @@ bool Button::checkPress(double _x, double _y, int wx, int wy) {
     float nx = ((float) _x * 2 / wx) - 1;
     float ny = ((float) _y * 2 / wy) - 1;
     if (x >= nx && x - width <= nx && y >= ny && y - height <= ny) {
-        std::cout << "i be clicking" << std::endl;
+        //darken
+        changeColor(0.7f, 0.7f, 0.7f);
         return true;
     }
     return false;
+}
+
+void Button::changeColor(float r, float g, float b) {
+    for (int i = 0; i < 4; i++) {
+        vertices[i * 9 + 5] = r;
+        vertices[i * 9 + 6] = g;
+        vertices[i * 9 + 7] = b;
+    }
+
+    //update vertex buffer
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);
+}
+
+int* Button::getBind() {
+    return bind;
 }

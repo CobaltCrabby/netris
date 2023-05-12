@@ -4,7 +4,7 @@
 enum color {red, green, dark_blue, yellow, light_blue, purple, orange};
 enum piece {Z, S, J, O, I, T, L};
 enum KeyCode : int32_t {
-	Unknown = -1,
+	un = -1,
 	Space = 32,
 	Apostrophe = 39,
 	Comma = 44,
@@ -55,7 +55,7 @@ enum KeyCode : int32_t {
 	GraveAccent = 96,
 	World1 = 161,
 	World2 = 162,
-	Escape = 256,
+	escape = 256,
 	Enter = 257,
 	Tab = 258,
 	Backspace = 259,

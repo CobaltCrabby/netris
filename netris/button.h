@@ -26,6 +26,7 @@ class Button {
     float x, y;
     float width, height;
     const char* textureName;
+    int* bind;
 
     float vertices[36] = {
         //vertex           texture      rgba color
@@ -41,9 +42,11 @@ class Button {
     };
 
     public:
-        Button(float _x, float _y, float _w, float _h, const char* texture);
+        Button(float _x, float _y, float _w, float _h, const char* texture, int* _bind);
         ~Button();
         void drawInit();
         void draw();
         bool checkPress(double x, double y, int wx, int wy);
+        void changeColor(float r, float g, float b);
+        int* getBind();
 };

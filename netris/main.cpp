@@ -1,6 +1,8 @@
 #define GLEW_STATIC
+#define CURL_STATICLIB
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <curl/curl.h>
 #include <iostream>
 
 #include "grid.h"
@@ -8,7 +10,7 @@
 #include "button.h"
 
 Grid* grid;
-Button* bind;
+Button* bindButton;
 
 void window_size_callback(GLFWwindow* window, int width, int height);
 void keyCallback(GLFWwindow* window);
@@ -23,6 +25,10 @@ bool waitingForBind = false;
 
 int main(void) {
     GLFWwindow* window;
+
+    CURL* curl;
+    curl = curl_easy_init();
+    curl_easy_cleanup(curl);
 
     if (!glfwInit())
         return -1;
@@ -235,7 +241,7 @@ void nextKeyPress(GLFWwindow* window, int key, int scancode, int action, int mod
         glfwSetMouseButtonCallback(window2, mouseButtonCallback);
         glfwMakeContextCurrent(window2);
         
-        bind = new Button(0.15f, 0.15f, 0.3f, 0.3f, "button.png");
+        bindButton = new Button(0.15f, 0.15f, 0.3f, 0.3f, "button.png", &hardDropBind);
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -250,6 +256,7 @@ void keyBindPress(GLFWwindow* window, int key, int scancode, int action, int mod
     if (waitingForBind && action == GLFW_PRESS) {
         *currentBind = key;
         waitingForBind = false;
+        bindButton->changeColor(1.0f, 1.0f, 1.0f);
     }
 }
 
@@ -261,7 +268,7 @@ void window2Render(GLFWwindow* window2) {
     glClearColor(32.0f / 255.0f, 32.0f / 255.0f, 32.0f / 255.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    bind->draw();
+    bindButton->draw();
         
     glfwSwapBuffers(window2);
 }
@@ -274,8 +281,9 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
         int width, height;
         glfwGetWindowSize(window, &width, &height);
 
-        if (bind->checkPress(xpos, ypos, width, height)) {
+        if (bindButton->checkPress(xpos, ypos, width, height)) {
             waitingForBind = true;
+            currentBind = bindButton->getBind();
         }
     }
 }
