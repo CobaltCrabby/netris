@@ -9,30 +9,38 @@ mem.on('error', (err) => {
     console.log(`REDIS ERROR: ${err}`);
 });
 
-/* access session by id. */
-app.get('/session/:id', async(req, res) => {
-    await mem.connect();
-    await mem.set('e', 'true');
-    const v = await mem.get('e')
+/* pop clears of a user */
+app.get('/user/:u/getClears', async(req, res) => {
+    c = await mem.get(`kentris:${req.params.u}:clears`);
+    mem.set(`kentris:${req.params.u}:clears`, '0');
+    res.send(c);
 });
 
-/* update session by id. */
-app.put('/session/:id', async(req, res) => {
-    await mem.connect();
+app.get('/asUser/:u/lose', async(req, res) => {
+    await mem.set(`kentris:${req.params.u}:lost`, '1');
+});
+
+/* update clears. */
+app.get('/asUser/:u/clear', async(req, res) => {
+    await mem.incr(`kentris:${req.params.u}:clears`);
+    res.send(await mem.get(`kentris:${req.params.u}:clears`));
 });
 
 /* create a new session, returns id. */
-app.get('/newsession', async(req, res) => {
-    await mem.connect();
-    const id = Math.floor((Math.random()*10000)).toString();
-    res.send(id);
+app.get('/asUser/:u', async(req, res) => {
+    /* empty list. */
+    await mem.set(`kentris:${req.params.u}:clears`, '0');
+    await mem.set(`kentris:${req.params.u}:lost`, '0');
+
+    res.send();
 });
 
-/* End session. */
-app.delete('/endsession/:id', async(req, res) => {
+(async () => {
     await mem.connect();
-});
+})();
 
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+mem.on('ready', () => {
+    app.listen(port, () => {
+        console.log(`Example app listening on port ${port}`);
+    });
 });
