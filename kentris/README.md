@@ -1,37 +1,41 @@
 # KENTRIS
 Kentris Evolved Networked Tetris Response Intelligence System
 
-## requirements
+## Getting Started
 To run this application you'll need:
 - node
 - npm
 - redis
 
+### installing the necessary services
+```bash
+sudo apt-get install nodejs redis
+```
+### redis
 This application uses the redis cache as a database. The redis documentation has instructions
 on how to get started but essentially all you need to do is install redis on a linux machine
-and enable it as a service and start it.
+and and start it as a systemd service.
+```bash
+sudo systemctl start redis
+```
 
-An easy way to get this running for a quick demonstration is to
-run the application (Go to the directory this readme is in), run
-the application `node index.js`, and run `ngrok` on port 3000 (ngrok http 3000). And
-then make sure you have redis described as detailed in the previous paragraph.
-Through ngrok you will get an internet--accessible tunnel to the application.
+## Running 
+- Clone the code from the git repository, or download it as a zip file.
+- go to the kentris directory, it'll be the one with the index.js file
+- make sure `redis` has been started as described in the previous paragraph
+- `npm install` to install the javascript dependencies needed for this application
+- `node index.js` to run the application
 
-You can also grab the local ip address, given everybody's in the same network, and
-make requests directly to that address but the other options a little easier because it
-jumps around weird school network stuff that can occur. Just know that both options are
-good and available.
+## accessing the application
+You can choose to run `ngrok` on the application to create a tunnel
+where you can access the application from anywhere on the internet.
+OR you can choose to access the application directly by the local ip address
+of the computer running kentris.
 
-On a debian based distro like debian or ubuntu, setting up the application with ngrok and redis would look like this:
-
-- clone the netris repo
-- `cd kentris`
-- `sudo apt-get install nodejs redis`
-- `sudo systemctl enable redis`
-- `sudo systemctl start redis`
-- `npm install`
-- `node index.js`
-- `ngrok http 3000`
+To find the ip of a linux computer:
+```bash
+hostname -I
+```
 
 ## routes
 | route                | description |
