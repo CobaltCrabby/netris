@@ -24,7 +24,7 @@ good and available.
 
 On a debian based distro like debian or ubuntu, setting up the application with ngrok and redis would look like this:
 
-- clone netris repo
+- clone the netris repo
 - `cd kentris`
 - `sudo apt-get install nodejs redis`
 - `sudo systemctl enable redis`
