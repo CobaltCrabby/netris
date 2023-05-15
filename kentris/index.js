@@ -1,3 +1,10 @@
+/*
+    * Kentris main file
+    *
+    * AUTHOR: Jack Davidson
+    *
+    */
+
 const express = require('express');
 const redis = require('redis');
 
